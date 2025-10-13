@@ -6,6 +6,9 @@ import ProductCard from "@/components/ProductCard";
 import SeedSection from "@/components/SeedSection";
 import React from "react";
 import OurBestSellingProducts from "@/components/OurBestSellingProducts";
+import PulseAndSpices from "@/components/PulseAndSpices";
+import TrendingProducts from "@/components/trendingProductSection/TrendingProducts";
+import Testimonial from "@/components/testimonial/Testimonial";
 
 const Home = () => {
   return (
@@ -16,6 +19,9 @@ const Home = () => {
       <OurNewProduct />
       <BestSpeciesPulses />
       <OurBestSellingProducts />
+      <PulseAndSpices />
+      <TrendingProducts />
+      <Testimonial />
     </div>
   );
 };
