@@ -1,41 +1,71 @@
 import { BsFillCheckCircleFill, BsFillStarFill } from "react-icons/bs";
 import { FiArrowUpRight, FiChevronDown, FiAward } from "react-icons/fi";
-// Replace image import as per your assets
-// import heroImg from "../assets/coriander.jpg";
-import heroImg from "../assets/coriander1.png";
+import heroImg from "../assets/herosection.png";
+import IconBadge from "./IconBadge";
 // import naturalSpiceImg from "../assets/natural-spice.jpg";
-import star from "../assets/star-2.svg";
 
 export default function HeroSection() {
   return (
-    <section className="w-full bg-white flex flex-col md:flex-row gap-6">
-      <div className="md:w-[70%]  bg-cover bg-center h-64">
-        <div className="flex bg-white">
-          <button className="bg-white border border-grayish-blue flex items-center gap-2 px-2 py-1 rounded-full">
-            <img src={star} alt="" />
-            Seeds
-          </button>
-          <button className="bg-white border border-grayish-blue flex items-center gap-2 px-2 py-1 rounded-full">
-            <img src={star} alt="" />
-            Organic
-          </button>
-        </div>
-        <h1 className="text-3xl pe-3 rounded-e-2xl    inline-block bg-white sm:text-4xl xl:text-5xl font-bold leading-tight ">
-          <span className="text-green-600">PLUSES & SPICES</span>: FRESH
-          <br />
-        </h1>
-        <h1 className="text-3xl pe-3 rounded-e-2xl    inline-block bg-white sm:text-4xl xl:text-5xl font-bold leading-tight ">
-          FLAVOURS, <span className="text-green-600">ENDLESS</span>
-        </h1>
-        <h1 className="text-3xl pe-3 rounded-e-2xl    inline-block bg-white sm:text-4xl xl:text-5xl font-bold leading-tight ">
-          POSSIBILITIES
-        </h1>
+    <section className="flex">
+      <div className="flex w-[70%]">
         <div>
-          <img src={heroImg} alt="" />
+          <div className="flex">
+            <IconBadge title={"Seeds"} />
+            <IconBadge title={"Organic"} />
+          </div>
+          <h1 className="text-3xl pe-3 rounded-e-2xl    inline-block bg-white sm:text-4xl xl:text-5xl font-semibold leading-tight ">
+            <span className="text-text-green">PLUSES & SPICES</span>: FRESH{" "}
+            <br />{" "}
+          </h1>{" "}
+          <h1 className="text-3xl pe-3 rounded-e-2xl    inline-block bg-white sm:text-4xl xl:text-5xl font-semibold leading-tight ">
+            FLAVOURS, <span className="text-text-green">ENDLESS</span>{" "}
+          </h1>{" "}
+          <h1 className="text-3xl pe-3 rounded-e-2xl    inline-block bg-white sm:text-4xl xl:text-5xl font-semibold leading-tight ">
+            POSSIBILITIES{" "}
+          </h1>
+        </div>
+        <div className="w-[70%]">
+          <img src={heroImg} className="w-full" alt="" />
         </div>
       </div>
-      <div className="md:w-[30%]"></div>
+      <div className="w-[30%]">
+        <div>
+          <div>
+            <p>Natural Spice</p>
+            <p>We are focusing on Natural spice</p>
+          </div>
+          <div></div>
+        </div>
+      </div>
     </section>
+    // <section className="w-full bg-white flex flex-col md:flex-row gap-6">
+    //   <div className="md:w-[70%] bg-cover bg-center h-64">
+    //     <div className="flex bg-white">
+    //       <button className="bg-white border border-grayish-blue flex items-center gap-2 px-2 py-1 rounded-full">
+    //         <img src={star} alt="" />
+    //         Seeds
+    //       </button>
+    //       <button className="bg-white border border-grayish-blue flex items-center gap-2 px-2 py-1 rounded-full">
+    //         <img src={star} alt="" />
+    //         Organic
+    //       </button>
+    //     </div>
+    //     <h1 className="text-3xl pe-3 rounded-e-2xl    inline-block bg-white sm:text-4xl xl:text-5xl font-bold leading-tight ">
+    //       <span className="text-green-600">PLUSES & SPICES</span>: FRESH
+    //       <br />
+    //     </h1>
+    //     <h1 className="text-3xl pe-3 rounded-e-2xl    inline-block bg-white sm:text-4xl xl:text-5xl font-bold leading-tight ">
+    //       FLAVOURS, <span className="text-green-600">ENDLESS</span>
+    //     </h1>
+    //     <h1 className="text-3xl pe-3 rounded-e-2xl    inline-block bg-white sm:text-4xl xl:text-5xl font-bold leading-tight ">
+    //       POSSIBILITIES
+    //     </h1>
+    //     <div>
+    //       <img src={heroImg} alt="" />
+    //     </div>
+    //   </div>
+    //   <div className="md:w-[30%]"></div>
+    // </section>
     // <section className="w-full bg-white pt-6 flex flex-col md:flex-row gap-6">
     //   {/* Left Column */}
     //   <div className="flex-1 flex flex-col justify-center max-w-xl">
