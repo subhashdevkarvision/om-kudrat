@@ -1,0 +1,37 @@
+import React from "react";
+import IconBadge from "./IconBadge";
+import IconBadgeGreen from "./IconsBadgeGreen";
+import { Button } from "./ui/button";
+import { MoveRight } from "lucide-react";
+import BestSellingProductCard from "./bestSellingProductCard";
+
+const OurBestSellingProducts = () => {
+  return (
+    <div>
+      <div>
+        <IconBadgeGreen title={"Best Sellers"} />
+      </div>
+      <div className="flex flex-wrap mt-1 justify-between items-center gap-6 sm:gap-0">
+        <h4 className="font-belfast text-Chinese-Black text-4xl">
+          Our Best Selling Products
+        </h4>
+
+        <Button
+          variant="outline"
+          className="flex justify-between border-grayish-blue font-normal items-center py-5 rounded-full font-poppins text-Chinese-Black"
+        >
+          View All Products <MoveRight />
+        </Button>
+      </div>
+      <div className="flex flex-wrap justify-center gap-5 mt-10 md:gap-0 md:justify-between">
+        <BestSellingProductCard />
+        <BestSellingProductCard />
+        <BestSellingProductCard />
+        <BestSellingProductCard />
+        <BestSellingProductCard />
+      </div>
+    </div>
+  );
+};
+
+export default OurBestSellingProducts;

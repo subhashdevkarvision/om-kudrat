@@ -10,7 +10,7 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="w-full px-4 xl:px-12 py-2 bg-white flex items-center justify-between font-poppins shadow-sm relative">
+    <nav className="w-full py-2 bg-white flex items-center justify-between font-poppins relative">
       {/* Logo */}
       <div className="">
         <img src={logo} alt="Om Kudrat Logo" className="w-28" />

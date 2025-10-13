@@ -18,6 +18,8 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         primary:
           "w-full cursor-pointer bg-text-green hover:bg-green-700 text-white py-5 rounded-lg transition",
+        explore:
+          "bg-white font-poppins text-Chinese-Black font-medium border border-grayish-blue rounded-full px-8 py-3 focus:outline-none focus:ring-2 focus:ring-gray-200 transition hover:border-gray-400",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
