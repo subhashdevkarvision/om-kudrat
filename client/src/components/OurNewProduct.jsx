@@ -26,7 +26,7 @@ const OurNewProduct = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-wrap mt-5 justify-center sm:justify-center gap-2 sm:gap-0 md:gap-5">
+      <div className="flex flex-wrap mt-5 justify-center sm:justify-between gap-6 sm:gap-6 ">
         <ProductCard />
         <ProductCard />
         <ProductCard />

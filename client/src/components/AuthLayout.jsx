@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 const AuthLayout = () => (
   <div className="flex flex-col lg:flex-row min-h-screen">
     {/* Left Section */}
-    <div className="w-full lg:w-[49%] flex flex-col justify-center items-center py-2 px-4 sm:px-6 md:px-12 bg-white">
+    <div className="w-full lg:w-[49%] flex flex-col h-screen justify-center items-center py-2 px-4 sm:px-6 md:px-12 bg-white">
       <Outlet />
     </div>
     {/* Right Image Section */}

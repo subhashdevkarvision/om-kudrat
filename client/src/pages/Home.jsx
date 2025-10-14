@@ -9,12 +9,16 @@ import OurBestSellingProducts from "@/components/OurBestSellingProducts";
 import PulseAndSpices from "@/components/PulseAndSpices";
 import TrendingProducts from "@/components/trendingProductSection/TrendingProducts";
 import Testimonial from "@/components/testimonial/Testimonial";
+import ServiceHighlights from "@/components/serviceHighlights/ServiceHighlights";
+import ExclusiveOffers from "@/components/exclusiveOffers/ExclusiveOffers";
+import Footer from "@/components/footer/Footer";
+import HeroSection from "@/components/HeroSection";
 
 const Home = () => {
   return (
-    <div className="px-4 py-4 md:py-10 md:px-16 space-y-5 md:space-y-28">
+    <div className="px-5 py-4 container xl:px-0 mx-auto space-y-10 md:space-y-28">
       <Navbar />
-      {/* <HeroSection /> */}
+      <HeroSection />
       <SeedSection />
       <OurNewProduct />
       <BestSpeciesPulses />
@@ -22,6 +26,9 @@ const Home = () => {
       <PulseAndSpices />
       <TrendingProducts />
       <Testimonial />
+      <ServiceHighlights />
+      <ExclusiveOffers />
+      <Footer />
     </div>
   );
 };

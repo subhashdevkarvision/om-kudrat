@@ -10,7 +10,6 @@ import Home from "./pages/Home";
 
 const App = () => {
   return (
-    // <Router>
     <Routes>
       <Route path="/auth" element={<AuthLayout />}>
         <Route index element={<Login />} />
@@ -21,7 +20,6 @@ const App = () => {
       </Route>
       <Route path="/" element={<Home />} />
     </Routes>
-    // </Router>
   );
 };
 

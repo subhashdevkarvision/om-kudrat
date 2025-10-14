@@ -2,20 +2,65 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import google from "../assets/search.png";
 import facebook from "../assets/facebook1.png";
-import React from "react";
+import React, { useState } from "react";
 
 const Login = () => {
+  const [fields, setFields] = useState({
+    name: "",
+    email: "",
+    password: "",
+    terms: false,
+  });
+  const [errors, setErrors] = useState({});
+  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFields((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+  const validate = () => {
+    const newErr = {};
+    if (!fields.name.trim()) {
+      newErr.name = "Name is required";
+    }
+
+    if (!fields.email) {
+      newErr.email = "Email is required";
+    } else if (!emailPattern.test(fields.email)) {
+      newErr.email = "Email is not valid";
+    }
+    if (!fields.password) {
+      newErr.password = "Password is required";
+    } else if (fields.password.length < 8) {
+      newErr.password = "Password must be 8+ characters";
+    }
+    if (!fields.terms) {
+      newErr.terms = "You must agree to Terms & Privacy";
+    }
+    setErrors(newErr);
+    return Object.keys(newErr).length === 0;
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validate()) {
+      return;
+    }
+    console.log("form submitted");
+  };
   return (
     <div className="w-full max-w-md font-poppins">
-      <h2 className="text-3xl font-semibold font-belfast mb-2 text-[#161616]">
+      <h2 className="text-3xl font-medium font-belfast mb-2 text-[#161616]">
         Get Started Now
       </h2>
-      <p className="text-gray-500 mb-8">
+      <p className="text-Black-Olive font-poppins text-sm mb-8">
         Enter your credentials to access your account
       </p>
 
-      <div className="flex flex-col sm:flex-row gap-4 mb-8">
-        <Button className="flex-1 bg-white border text-black border-gray-300 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50">
+      <div className="flex flex-col font-poppins sm:flex-row gap-4 mb-8">
+        <Button className="flex-1 bg-white border text-Chinese-Black border-gray-300 py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50">
           <img src={google} alt="Google" className="w-5 h-5" />
           Log in with Google
         </Button>
@@ -31,12 +76,21 @@ const Login = () => {
         <hr className="flex-1 border-gray-300" />
       </div>
 
-      <form className="space-y-5">
+      <form className="space-y-5" onSubmit={handleSubmit} noValidate>
         <div>
           <label className="text-lg font-medium font-belfast text-[#161616]">
             Name
           </label>
-          <Input type="text" className="my-0" placeholder="Enter name" />
+          <Input
+            type="text"
+            className="my-0"
+            placeholder="Enter name"
+            value={fields.name}
+            onChange={handleChange}
+          />
+          {errors.name && (
+            <div className="text-sm text-red-500 mt-1">{errors.name}</div>
+          )}
         </div>
         <div>
           <label className="text-lg font-medium font-belfast text-[#161616]">
@@ -46,7 +100,12 @@ const Login = () => {
             type="email"
             className="my-0"
             placeholder="youremail@comapny.com"
+            value={fields.email}
+            onChange={handleChange}
           />
+          {errors.email && (
+            <div className="text-sm text-red-500 mt-1">{errors.email}</div>
+          )}
         </div>
         <div>
           <label className="text-lg font-medium font-belfast text-[#161616]">
@@ -56,7 +115,12 @@ const Login = () => {
             type="password"
             className="my-0"
             placeholder="minimum 8 characters"
+            value={fields.password}
+            onChange={handleChange}
           />
+          {errors.password && (
+            <div className="text-sm text-red-500 mt-1">{errors.password}</div>
+          )}
           <div className="flex flex-row justify-between mt-2 items-center text-sm">
             <div className="flex gap-2">
               <input id="rmm" type="checkbox" className="accent-green-600" />
@@ -73,14 +137,22 @@ const Login = () => {
           </div>
         </div>
         <label className="flex items-center gap-2 text-sm text-[#161616]">
-          <input type="checkbox" className="accent-green-600" />
+          <input
+            type="checkbox"
+            className="accent-green-600"
+            checked={fields.terms}
+            onChange={handleChange}
+          />
           <span className="font-[500]">
             I agree to the{" "}
-            <a href="#" className="">
+            <a href="#" className="underline">
               Terms & Privacy
             </a>
           </span>
         </label>
+        {errors.terms && (
+          <div className="text-sm text-red-500 mt-1">{errors.terms}</div>
+        )}
         <Button variant="primary" className="py-5" type="submit">
           Login
         </Button>

@@ -6,11 +6,13 @@ const TrendingProductCard = () => {
     <div className="flex gap-5 items-center">
       <img src={product3} className="size-44" alt="" />
       <div>
-        <p className="font-poppins font-medium text-Chinese-Black">
+        <p className="font-poppins font-medium text-lg text-Chinese-Black">
           White Musterd
         </p>
-        <span className="text-grayish-blue line-through">$20.50</span>
-        <p className="font-poppins font-medium text-text-green">$16.50</p>
+        <span className="text-grayish-blue text-xs line-through">$20.50</span>
+        <p className="font-poppins font-medium text-lg text-text-green">
+          $16.50
+        </p>
       </div>
     </div>
   );

@@ -6,7 +6,7 @@ import { Button } from "./ui/button";
 
 const ProductCard = ({ title, price }) => (
   <div className="font-poppins">
-    <div className="bg-[url('/public/product1.png')] relative rounded-2xl h-96  bg-cover bg-center w-xs max-w-[300px] bg-no-repeat">
+    <div className="bg-[url('/product1.png')] relative rounded-2xl h-96  bg-cover bg-center w-xs max-w-[300px] bg-no-repeat">
       <Button variant="ghost" size="icon" className="absolute top-4 right-4">
         <Heart />
       </Button>

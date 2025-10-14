@@ -6,9 +6,9 @@ const SeedSection = () => {
   return (
     <section className="flex flex-col lg:flex-row items-center gap-8">
       <div className="flex-1 flex flex-col justify-center items-start">
-        <h2 className="text-3xl md:text-4xl font-semibold mb-3 leading-tight">
-          Organic <span className="text-text-green">Seeds </span> for Healthier
-          Gardens
+        <h2 className="text-3xl md:text-4xl font-belfast font-semibold mb-3 leading-tight">
+          Organic <span className="text-text-green">Seeds </span>
+          <br /> for Healthier <br /> Gardens
         </h2>
         <p className="mt-6 text-[#404040] ">
           Om Kudrat Seed & Spices, your ultimate destination for premium quality
