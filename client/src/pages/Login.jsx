@@ -3,6 +3,9 @@ import { Input } from "@/components/ui/input";
 import google from "../assets/search.png";
 import facebook from "../assets/facebook1.png";
 import React, { useState } from "react";
+import axios from "axios";
+import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 const Login = () => {
   const [fields, setFields] = useState({
@@ -13,6 +16,7 @@ const Login = () => {
   });
   const [errors, setErrors] = useState({});
   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -43,12 +47,35 @@ const Login = () => {
     setErrors(newErr);
     return Object.keys(newErr).length === 0;
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) {
       return;
     }
-    console.log("form submitted");
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/auth/login`,
+        { name: fields.name, email: fields.email, password: fields.password }
+      );
+      if (res.data.success) {
+        toast.success(res.data.message);
+        localStorage.setItem(
+          "token",
+          JSON.stringify(res.data.authenticationKey)
+        );
+        setFields({
+          name: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+          terms: false,
+        });
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
   };
   return (
     <div className="w-full max-w-md font-poppins">
@@ -85,6 +112,7 @@ const Login = () => {
             type="text"
             className="my-0"
             placeholder="Enter name"
+            name="name"
             value={fields.name}
             onChange={handleChange}
           />
@@ -101,6 +129,7 @@ const Login = () => {
             className="my-0"
             placeholder="youremail@comapny.com"
             value={fields.email}
+            name="email"
             onChange={handleChange}
           />
           {errors.email && (
@@ -115,6 +144,7 @@ const Login = () => {
             type="password"
             className="my-0"
             placeholder="minimum 8 characters"
+            name="password"
             value={fields.password}
             onChange={handleChange}
           />
@@ -131,7 +161,10 @@ const Login = () => {
                 Remember Me
               </label>
             </div>
-            <a href="#" className="text-text-green hover:underline sm:mt-0">
+            <a
+              onClick={() => navigate("/auth/forgot-password")}
+              className="text-text-green hover:underline sm:mt-0"
+            >
               Forgot Password?
             </a>
           </div>
@@ -142,6 +175,7 @@ const Login = () => {
             className="accent-green-600"
             checked={fields.terms}
             onChange={handleChange}
+            name="terms"
           />
           <span className="font-[500]">
             I agree to the{" "}
@@ -159,7 +193,10 @@ const Login = () => {
       </form>
       <p className="text-sm mt-6 font-medium text[#161616]">
         Don’t have an account?{" "}
-        <a href="#" className="text-green-600 hover:underline">
+        <a
+          onClick={() => navigate("/auth/register")}
+          className="text-green-600 hover:underline"
+        >
           Sign up
         </a>
       </p>

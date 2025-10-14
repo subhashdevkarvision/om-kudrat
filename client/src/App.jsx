@@ -7,19 +7,25 @@ import VerifyCode from "./pages/VerifyCode";
 import ResetPassword from "./pages/ResetPassword";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
+import { Toaster } from "./components/ui/sonner";
+import ResendVerifyCode from "./pages/ResendVerifyCode";
 
 const App = () => {
   return (
-    <Routes>
-      <Route path="/auth" element={<AuthLayout />}>
-        <Route index element={<Login />} />
-        <Route path="/auth/forgot-password" element={<ForgotPassword />} />
-        <Route path="/auth/verify-code" element={<VerifyCode />} />
-        <Route path="/auth/reset-password" element={<ResetPassword />} />
-        <Route path="/auth/register" element={<Register />} />
-      </Route>
-      <Route path="/" element={<Home />} />
-    </Routes>
+    <>
+      <Toaster />
+      <Routes>
+        <Route path="/auth" element={<AuthLayout />}>
+          <Route index element={<Login />} />
+          <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+          <Route path="/auth/verify-email" element={<ResendVerifyCode />} />
+          <Route path="/auth/verify-code" element={<VerifyCode />} />
+          <Route path="/auth/reset-password" element={<ResetPassword />} />
+          <Route path="/auth/register" element={<Register />} />
+        </Route>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </>
   );
 };
 
