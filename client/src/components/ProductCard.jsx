@@ -1,8 +1,6 @@
-// src/components/ProductCard.jsx
 import { Heart } from "lucide-react";
 import { MoveUpRight } from "lucide-react";
 import { Button } from "./ui/button";
-// import product1 from "../assets/product1.png";
 
 const ProductCard = ({ title, price }) => (
   <div className="font-poppins">

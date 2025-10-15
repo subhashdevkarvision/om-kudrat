@@ -1,4 +1,3 @@
-// src/components/FeatureBenefits.jsx
 import { Package, Truck, MessagesSquare, CreditCard } from "lucide-react";
 
 const FEATURES = [
@@ -25,7 +24,7 @@ const FEATURES = [
 ];
 
 const ServiceHighlights = () => (
-  <div className="flex flex-col md:flex-row justify-center md:justify-between gap-6">
+  <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
     {FEATURES.map((feature, idx) => (
       <div
         key={idx}

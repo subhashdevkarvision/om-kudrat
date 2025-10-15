@@ -4,8 +4,16 @@ import { Button } from "./ui/button";
 
 const PulseAndSpices = () => {
   return (
-    <div className="bg-[url('/public/composition2.png')] bg-cover bg-center bg-no-repeat h-[440px] rounded-4xl">
-      <div className=" w-full flex flex-col justify-between h-full px-5 py-5 sm:py-10 sm:px-10 rounded-4xl">
+    <div className="relative rounded-4xl h-[440px] overflow-hidden">
+      {/* Blurred background image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat blur-md lg:blur-none"
+        style={{ backgroundImage: "url('/public/composition2.png')" }}
+        aria-hidden="true"
+      ></div>
+
+      {/* Content above blurred background */}
+      <div className="relative w-full flex flex-col justify-between h-full px-5 py-5 sm:py-10 sm:px-10 rounded-4xl">
         <div>
           <IconBadgeGreen title="Black Friday" className="" />
           <h3 className="font-belfast mt-2 mb-0.5 font-medium text-Chinese-Black text-5xl">

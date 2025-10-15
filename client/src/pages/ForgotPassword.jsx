@@ -75,7 +75,7 @@ const ForgotPassword = () => {
         Back to{" "}
         <a
           onClick={() => navigate("/auth")}
-          className="text-green-600 hover:underline"
+          className="text-green-600 hover:underline cursor-pointer"
         >
           Log in
         </a>

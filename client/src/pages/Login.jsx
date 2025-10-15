@@ -73,8 +73,7 @@ const Login = () => {
         navigate("/");
       }
     } catch (error) {
-      console.log(error);
-      toast.error(error.message);
+      toast.error(error?.response?.data?.message || "Something went wrong");
     }
   };
   return (
@@ -163,7 +162,7 @@ const Login = () => {
             </div>
             <a
               onClick={() => navigate("/auth/forgot-password")}
-              className="text-text-green hover:underline sm:mt-0"
+              className="text-text-green hover:underline sm:mt-0 cursor-pointer"
             >
               Forgot Password?
             </a>
@@ -195,7 +194,7 @@ const Login = () => {
         Don’t have an account?{" "}
         <a
           onClick={() => navigate("/auth/register")}
-          className="text-green-600 hover:underline"
+          className="text-green-600 hover:underline cursor-pointer"
         >
           Sign up
         </a>

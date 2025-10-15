@@ -1,4 +1,3 @@
-// src/components/ProductCard.jsx
 import { Heart } from "lucide-react";
 import { MoveUpRight } from "lucide-react";
 import { Button } from "./ui/button";

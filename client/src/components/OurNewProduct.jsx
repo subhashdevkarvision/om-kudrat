@@ -1,5 +1,4 @@
 import React from "react";
-// import naturalSpiceImg from "../assets/natural-spice.jpg";
 import IconBadge from "./IconBadge";
 import ProductCard from "./ProductCard";
 import { Button } from "./ui/button";

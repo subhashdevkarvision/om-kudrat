@@ -53,7 +53,7 @@ const ResendVerifyCode = () => {
         Back to{" "}
         <a
           onClick={() => navigate("/auth/forgot-password")}
-          className="text-green-600 hover:underline"
+          className="text-text-green hover:underline cursor-pointer"
         >
           Forgot Password
         </a>
@@ -62,7 +62,7 @@ const ResendVerifyCode = () => {
         Back to{" "}
         <a
           onClick={() => navigate("/auth")}
-          className="text-green-600 hover:underline"
+          className="text-text-green hover:underline cursor-pointer"
         >
           Log in
         </a>

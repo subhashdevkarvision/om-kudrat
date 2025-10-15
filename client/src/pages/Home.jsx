@@ -1,5 +1,4 @@
 import BestSpeciesPulses from "@/components/BestSpeciesPulses";
-// import HeroSection from "@/components/homePage/HeroSection";
 import Navbar from "@/components/Navbar";
 import OurNewProduct from "@/components/OurNewProduct";
 import ProductCard from "@/components/ProductCard";
@@ -16,8 +15,8 @@ import HeroSection from "@/components/HeroSection";
 
 const Home = () => {
   return (
-    <div className="px-5 py-4 container xl:px-0 mx-auto space-y-10 md:space-y-28">
-      <Navbar />
+    <div className=" space-y-20 md:space-y-28">
+      {/* <Navbar /> */}
       <HeroSection />
       <SeedSection />
       <OurNewProduct />

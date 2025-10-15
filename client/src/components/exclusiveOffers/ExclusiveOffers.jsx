@@ -10,7 +10,7 @@ const ExclusiveOffers = () => {
       <div className="flex flex-wrap justify-center sm:justify-between items-center sm:gap-36 rounded-full bg-[#0000004D] py-2 px-2 ">
         <input
           placeholder="Enter your email address"
-          className="px-5 text-lg border-none outline-none rounded-none text-white"
+          className="px-2 sm:px-5 text-lg border-none outline-none rounded-none text-white"
         ></input>
         <Button
           variant="outline"

@@ -72,10 +72,6 @@ const Register = () => {
 
       if (response.data.success) {
         toast.success("Registration successful!");
-        localStorage.setItem(
-          "token",
-          JSON.stringify(response.data.authenticationKey)
-        );
         setFields({
           name: "",
           email: "",
@@ -83,7 +79,7 @@ const Register = () => {
           confirmPassword: "",
           terms: false,
         });
-        navigate("/");
+        navigate("/auth");
       } else {
         toast.error(response.data.error.message || "Registration failed!");
       }
@@ -194,7 +190,7 @@ const Register = () => {
             </div>
             <a
               onClick={() => navigate("/auth/forgot-password")}
-              className="text-text-green hover:underline sm:mt-0"
+              className="text-text-green cursor-pointer hover:underline sm:mt-0"
             >
               Forgot Password?
             </a>
@@ -231,7 +227,7 @@ const Register = () => {
         Have an account ?{" "}
         <a
           onClick={() => navigate("/auth/")}
-          className="text-green-600 hover:underline"
+          className="text-text-green cursor-pointer hover:underline"
         >
           Log in
         </a>

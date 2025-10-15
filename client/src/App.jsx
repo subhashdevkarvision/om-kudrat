@@ -1,6 +1,5 @@
 import React from "react";
 import { Route, Router, Routes } from "react-router-dom";
-import AuthLayout from "./components/AuthLayout";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import VerifyCode from "./pages/VerifyCode";
@@ -9,12 +8,19 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import { Toaster } from "./components/ui/sonner";
 import ResendVerifyCode from "./pages/ResendVerifyCode";
+import MainLayout from "./components/layouts/MainLayout";
+import AuthLayout from "./components/layouts/AuthLayout";
+import Products from "./pages/Products";
 
 const App = () => {
   return (
     <>
       <Toaster />
       <Routes>
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<Home />} />
+          <Route path="/products" element={<Products />} />
+        </Route>
         <Route path="/auth" element={<AuthLayout />}>
           <Route index element={<Login />} />
           <Route path="/auth/forgot-password" element={<ForgotPassword />} />
@@ -23,7 +29,6 @@ const App = () => {
           <Route path="/auth/reset-password" element={<ResetPassword />} />
           <Route path="/auth/register" element={<Register />} />
         </Route>
-        <Route path="/" element={<Home />} />
       </Routes>
     </>
   );
