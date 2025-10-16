@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FeartureProductCard from "./FeartureProductCard";
 import {
   Select,
@@ -20,26 +20,41 @@ import { Checkbox } from "../ui/checkbox";
 import FilterHeader from "./FilterHeader";
 import { Slider } from "../ui/slider";
 import PaginationComponent from "./PaginationComponent";
+import axios from "axios";
 
 const FeartureProductSection = () => {
   const [price, setPrice] = useState([40]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [categoriesProducts, setCategoriesProducts] = useState([]);
+  const [languages, setLanguages] = useState([]);
   const sortOptions = [
     { label: "Default", value: "default" },
     { label: "Price: Low to High", value: "low-high" },
     { label: "Price: High to Low", value: "high-low" },
     { label: "Newest", value: "newest" },
   ];
-  const spicesOptions = [
-    "Cinnamon sticks",
-    "Ground cinnamon",
-    "Cumin seeds",
-    "Ginger",
-    "Cassia",
-    "Black pepper",
-    "Saffron",
-  ];
-  const languages = ["Indian", "Chinese", "Spanish"];
+
+  const filters = async () => {
+    const res = await axios.get(
+      `${import.meta.env.VITE_BACKEND_URL}/product/filters`
+    );
+    if (res.data.success) {
+      const filterCategoriesProducts = [];
+      const filterLanguages = [];
+      res.data.filters[0].categories.map((category) => {
+        filterCategoriesProducts.push(category);
+      });
+      res.data.filters[0].languages.map((language) => {
+        filterLanguages.push(language.name);
+      });
+      setLanguages(filterLanguages);
+      setCategoriesProducts(filterCategoriesProducts);
+      console.log(filterLanguages);
+    }
+  };
+  useEffect(() => {
+    filters();
+  }, []);
   return (
     <div className="flex flex-col sm:flex-row justify-between">
       {/* filter section */}
@@ -68,75 +83,31 @@ const FeartureProductSection = () => {
         <div>
           <FilterHeader title="Categories" />
           {/* accordian */}
-          <Accordion>
-            <AccordionItem value="spices" className="border-none">
-              <AccordionTrigger className="text-base font-normal py-4 px-2 border-b hover:no-underline [&[data-state=open]>svg]:rotate-180 justify-between">
-                Spices
-              </AccordionTrigger>
-              <AccordionContent className="pl-2 pr-4 text-Gray91">
-                {spicesOptions.map((option) => (
-                  <label
-                    key={option}
-                    className="flex border-Gray91 rounded-2xl items-center py-2"
-                  >
-                    <Checkbox className="data-[state=checked]:bg-text-green data-[state=checked]:border-text-green w-5 h-5 mr-3 rounded border-gray-400" />
-                    <span className="text-sm  flex-1">{option}</span>
-                    <span className="text-sm ml-2">(12)</span>
-                  </label>
-                ))}
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="Pulses" className="border-none">
-              <AccordionTrigger className="text-base font-normal border-b py-4 px-2 hover:no-underline [&[data-state=open]>svg]:rotate-180 justify-between">
-                Pulses
-              </AccordionTrigger>
-              <AccordionContent className="pl-2 pr-4 text-Gray91">
-                {spicesOptions.map((option) => (
-                  <label
-                    key={option}
-                    className="flex border-Gray91 rounded-2xl items-center py-2"
-                  >
-                    <Checkbox className="data-[state=checked]:bg-text-green data-[state=checked]:border-text-green w-5 h-5 mr-3 rounded border-gray-400" />
-                    <span className="text-sm  flex-1">{option}</span>
-                    <span className="text-sm ml-2">(12)</span>
-                  </label>
-                ))}
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="Bundles" className="border-none">
-              <AccordionTrigger className="text-base font-normal border-b py-4 px-2 hover:no-underline [&[data-state=open]>svg]:rotate-180 justify-between">
-                Bundles
-              </AccordionTrigger>
-              <AccordionContent className="pl-2 pr-4 text-Gray91">
-                {spicesOptions.map((option) => (
-                  <label
-                    key={option}
-                    className="flex border-Gray91 rounded-2xl items-center py-2"
-                  >
-                    <Checkbox className="data-[state=checked]:bg-text-green data-[state=checked]:border-text-green w-5 h-5 mr-3 rounded border-gray-400" />
-                    <span className="text-sm  flex-1">{option}</span>
-                    <span className="text-sm ml-2">(12)</span>
-                  </label>
-                ))}
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="Mix Combos" className="border-none">
-              <AccordionTrigger className="text-base font-normal border-b py-4 px-2 hover:no-underline [&[data-state=open]>svg]:rotate-180 justify-between">
-                Mix Combos
-              </AccordionTrigger>
-              <AccordionContent className="pl-2 pr-4 text-Gray91">
-                {spicesOptions.map((option) => (
-                  <label
-                    key={option}
-                    className="flex border-Gray91 rounded-2xl items-center py-2"
-                  >
-                    <Checkbox className="data-[state=checked]:bg-text-green data-[state=checked]:border-text-green w-5 h-5 mr-3 rounded border-gray-400" />
-                    <span className="text-sm  flex-1">{option}</span>
-                    <span className="text-sm ml-2">(12)</span>
-                  </label>
-                ))}
-              </AccordionContent>
-            </AccordionItem>
+          <Accordion type="single" collapsible>
+            {categoriesProducts &&
+              categoriesProducts.map((item, index) => (
+                <AccordionItem
+                  key={index}
+                  value={item.categoryName}
+                  className="border-none"
+                >
+                  <AccordionTrigger className="text-base font-normal py-4 px-2 border-b hover:no-underline [&[data-state=open]>svg]:rotate-180 justify-between">
+                    {item.categoryName}
+                  </AccordionTrigger>
+                  <AccordionContent className="pl-2 pr-4 text-Gray91">
+                    {item.products.map((option, index) => (
+                      <label
+                        key={index}
+                        className="flex border-Gray91 rounded-2xl items-center py-2"
+                      >
+                        <Checkbox className="data-[state=checked]:bg-text-green data-[state=checked]:border-text-green w-5 h-5 mr-3 rounded border-gray-400" />
+                        <span className="text-sm  flex-1">{option.name}</span>
+                        <span className="text-sm ml-2">(1)</span>
+                      </label>
+                    ))}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
           </Accordion>
         </div>
         {/* languages */}

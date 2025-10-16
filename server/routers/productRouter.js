@@ -1,7 +1,11 @@
 import express from "express";
 import { validateFields } from "../middleware/validation.js";
 import { upload } from "../middleware/multer.js";
-import { addProduct, getAllFilters } from "../controllers/productController.js";
+import {
+  addProduct,
+  getAllFilters,
+  getAllProducts,
+} from "../controllers/productController.js";
 const productRouter = express.Router();
 
 productRouter.post(
@@ -17,4 +21,5 @@ productRouter.post(
   addProduct
 );
 productRouter.get("/filters", getAllFilters);
+productRouter.get("/p", getAllProducts);
 export default productRouter;
