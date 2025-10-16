@@ -4,7 +4,7 @@ import React from "react";
 
 const Products = () => {
   return (
-    <div>
+    <div className="space-y-20 md:space-y-28">
       <FrontSection />
       <FeartureProductSection />
     </div>

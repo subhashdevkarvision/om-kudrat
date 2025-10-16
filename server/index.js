@@ -3,6 +3,9 @@ import cors from "cors";
 import "dotenv/config";
 import connectDb from "./config/mongoose.js";
 import userRouter from "./routers/userRouter.js";
+import categoryRouter from "./routers/categoryRouter.js";
+import languageRouter from "./routers/languageRouter.js";
+import productRouter from "./routers/productRouter.js";
 const app = express();
 
 app.use(express.json());
@@ -10,6 +13,9 @@ app.use(cors());
 
 connectDb();
 app.use("/auth", userRouter);
+app.use("/product", productRouter);
+app.use("/category", categoryRouter);
+app.use("/language", languageRouter);
 app.use("/", (req, res) => {
   res.send("api is working");
 });
