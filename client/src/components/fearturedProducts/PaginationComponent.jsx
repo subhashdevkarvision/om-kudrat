@@ -5,31 +5,54 @@ import {
   PaginationLink,
   PaginationEllipsis,
   PaginationNext,
+  PaginationItem,
 } from "../ui/pagination";
 import { ChevronRight } from "lucide-react";
 import { Button } from "../ui/button";
 
-const PaginationComponent = () => {
+const PaginationComponent = ({ currentPage, onpageChange, totalPages }) => {
+  const handlePageClick = (p) => {
+    if (currentPage !== p) {
+      onpageChange(p);
+    }
+  };
+
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+
   return (
-    <Pagination className="justify-start">
+    <Pagination className="flex flex-wrap justify-center lg:justify-start gap-2 sm:gap-4">
       <PaginationContent>
-        <PaginationLink className="bg-text-green text-white rounded-full">
-          1
-        </PaginationLink>
-      </PaginationContent>
-      <PaginationContent>
-        <PaginationLink>2</PaginationLink>
-      </PaginationContent>
-      <PaginationContent>
-        <PaginationEllipsis />
-      </PaginationContent>
-      <PaginationContent>
-        <PaginationNext></PaginationNext>
-      </PaginationContent>
-      <PaginationContent>
+        {pages.map((item) => (
+          <PaginationItem key={item}>
+            <PaginationLink
+              onClick={() => handlePageClick(item)}
+              isActive={currentPage === item}
+              className={`${
+                currentPage === item
+                  ? "bg-text-green text-white"
+                  : "hover:bg-gray-100"
+              } rounded-full cursor-pointer`}
+            >
+              {item}
+            </PaginationLink>
+          </PaginationItem>
+        ))}
+        <PaginationItem>
+          <PaginationNext
+            onClick={() =>
+              handlePageClick(Math.min(totalPages, currentPage + 1))
+            }
+            className={
+              currentPage === totalPages
+                ? "pointer-events-none opacity-50 cursor-pointer"
+                : "cursor-pointer"
+            }
+          />
+        </PaginationItem>
         <Button
           variant="outline"
-          className="rounded-full font-medium px-8 py-5"
+          className="rounded-full font-medium px-8 py-5 cursor-pointer"
+          onClick={() => handlePageClick(totalPages)}
         >
           Last
         </Button>

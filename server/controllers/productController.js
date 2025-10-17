@@ -157,9 +157,20 @@ export const getAllFilters = async (req, res) => {
 
 export const getAllProducts = async (req, res) => {
   try {
-    const { ids, language, minPrice, maxPrice, isFeatured, isBestSeller } =
-      req.query;
-    console.log(req.query);
+    const {
+      searchTerm,
+      ids,
+      language,
+      minPrice,
+      maxPrice,
+      isFeatured,
+      isBestSeller,
+      sort,
+    } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = 9;
+
+    const skip = (page - 1) * limit;
     const matchCriteria = {};
     if (ids) {
       const idsArray = ids
@@ -167,16 +178,22 @@ export const getAllProducts = async (req, res) => {
         .map((id) => new mongoose.Types.ObjectId(id));
       matchCriteria._id = { $in: idsArray };
     }
+    if (searchTerm) {
+      matchCriteria.name = { $regex: searchTerm, $options: "i" };
+    }
     if (language) {
-      matchCriteria.languageId = new mongoose.Types.ObjectId(language);
+      const languageArray = language
+        .split(",")
+        .map((id) => new mongoose.Types.ObjectId(id));
+      matchCriteria.languageId = { $in: languageArray };
     }
     if (minPrice || maxPrice) {
-      matchCriteria.price = {};
+      matchCriteria.discountedPrice = {};
       if (minPrice) {
-        matchCriteria.price.$gte = Number(+language);
+        matchCriteria.discountedPrice.$gte = Number(+minPrice);
       }
       if (maxPrice) {
-        matchCriteria.price.$lte = Number(+language);
+        matchCriteria.discountedPrice.$lte = Number(+maxPrice);
       }
     }
     if (isFeatured !== undefined) {
@@ -185,9 +202,22 @@ export const getAllProducts = async (req, res) => {
     if (isBestSeller !== undefined) {
       matchCriteria.isBestSeller = isBestSeller === "true";
     }
-    console.log(matchCriteria);
+    let sortStage = {};
+    switch (sort) {
+      case "low-high":
+        sortStage = { discountedPrice: 1 };
+        break;
+      case "high-low":
+        sortStage = { discountedPrice: -1 };
+        break;
+      case "newest":
+        sortStage = { createdAt: -1 };
+        break;
+      default:
+        sortStage = { createdAt: 1 };
+        break;
+    }
     const products = await productModel.aggregate([
-      { $match: matchCriteria },
       {
         $lookup: {
           from: "categories",
@@ -206,8 +236,9 @@ export const getAllProducts = async (req, res) => {
         },
       },
       { $unwind: "$language" },
+      { $match: matchCriteria },
       {
-        $sort: { createdAt: -1 },
+        $sort: sortStage,
       },
       {
         $project: {
@@ -221,19 +252,27 @@ export const getAllProducts = async (req, res) => {
           language: "$language.name",
         },
       },
+      { $skip: skip },
+      { $limit: limit },
     ]);
-    if (products.length <= 0) {
+    const totalProducts = await productModel.countDocuments(matchCriteria);
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    if (products.length === 0) {
       return res
         .status(404)
-        .json({ success: false, message: "No product available" });
+        .json({ success: false, message: "No products available" });
     }
+
     res.status(200).json({
       success: true,
-      message: "Product fetched successfully",
+      message: "Products fetched successfully",
+      page,
+      totalPages,
+      totalProducts,
       products,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ success: false, message: error.message });
   }
 };

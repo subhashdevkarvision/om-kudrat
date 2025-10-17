@@ -1,11 +1,27 @@
-import React from "react";
-import IconBadge from "./IconBadge";
+import React, { useEffect, useState } from "react";
 import IconBadgeGreen from "./IconsBadgeGreen";
 import { Button } from "./ui/button";
 import { MoveRight } from "lucide-react";
 import BestSellingProductCard from "./bestSellingProductCard";
+import axios from "axios";
 
 const OurBestSellingProducts = () => {
+  const [products, setProducts] = useState([]);
+  const getAllProducts = async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/product/?isBestSeller=true`
+      );
+      if (res.data.success) {
+        setProducts(res.data.products);
+      }
+    } catch (error) {
+      setProducts([]);
+    }
+  };
+  useEffect(() => {
+    getAllProducts();
+  }, []);
   return (
     <div>
       <div>

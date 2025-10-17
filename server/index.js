@@ -9,6 +9,8 @@ import productRouter from "./routers/productRouter.js";
 const app = express();
 
 app.use(express.json());
+app.use("/uploads", express.static("public/uploads"));
+
 app.use(cors());
 
 connectDb();

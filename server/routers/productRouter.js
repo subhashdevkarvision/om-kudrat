@@ -21,5 +21,5 @@ productRouter.post(
   addProduct
 );
 productRouter.get("/filters", getAllFilters);
-productRouter.get("/p", getAllProducts);
+productRouter.get("/", getAllProducts);
 export default productRouter;
