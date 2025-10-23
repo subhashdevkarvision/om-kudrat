@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Router, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import VerifyCode from "./pages/VerifyCode";
@@ -11,6 +11,8 @@ import ResendVerifyCode from "./pages/ResendVerifyCode";
 import MainLayout from "./components/layouts/MainLayout";
 import AuthLayout from "./components/layouts/AuthLayout";
 import Products from "./pages/Products";
+import SingleProduct from "./pages/SingleProduct";
+import CheckoutPage from "./pages/CheckoutPage";
 
 const App = () => {
   return (
@@ -20,6 +22,8 @@ const App = () => {
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
           <Route path="/products" element={<Products />} />
+          <Route path="/products/:id" element={<SingleProduct />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
         </Route>
         <Route path="/auth" element={<AuthLayout />}>
           <Route index element={<Login />} />

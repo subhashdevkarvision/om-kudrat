@@ -275,6 +275,7 @@ const FeartureProductSection = () => {
             {products.length > 0 ? (
               products.map((product) => (
                 <FeartureProductCard
+                  id={product._id}
                   key={product._id}
                   name={product.name}
                   image={product.image}

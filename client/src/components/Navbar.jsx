@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
-import heart from "../assets/heart.png";
-import cart from "../assets/bag-2.png";
 import { Button } from "./ui/button";
 import { RxHamburgerMenu } from "react-icons/rx";
-import { UserRound, X } from "lucide-react";
+import { UserRound, X, Handbag, Heart } from "lucide-react";
 
-const Navbar = () => {
+const Navbar = ({ onCartClick, cartActive }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isAuth, setIsAuth] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const activePaths = ["/checkout", "/cart", "/place-order"];
+  const isActive = activePaths.includes(location.pathname);
   const handleLogOut = () => {
     localStorage.removeItem("token");
     setIsAuth(false);
+  };
+  const handleCartClick = () => {
+    onCartClick();
   };
   useEffect(() => {
     const auth = JSON.parse(localStorage.getItem("token"));
@@ -80,12 +84,28 @@ const Navbar = () => {
       <div className="flex items-center gap-4">
         <div className="hidden md:flex ">
           <button className="w-10 h-10 border border-grayish-blue rounded-full flex items-center cursor-pointer justify-center">
-            {/* Replace with your SVG or icon */}
-            <img src={heart} className="" alt="" />
+            <Heart size={18} className="text-Chinese-Black" />
           </button>
-          <button className="w-10 h-10 border border-grayish-blue rounded-full flex items-center cursor-pointer justify-center">
-            {/* Replace with your SVG or icon */}
-            <img src={cart} className="" alt="" />
+          <button
+            onClick={handleCartClick}
+            className={`w-10 h-10 border border-grayish-blue ${
+              cartActive && "border-text-green"
+            }  rounded-full flex items-center cursor-pointer justify-center ${
+              isActive
+                ? "border-text-green text-text-green"
+                : "border-grayish-blue text-Chinese-Black"
+            }`}
+          >
+            <Handbag
+              size={18}
+              className={`text-Chinese-Black ${
+                cartActive && "text-text-green"
+              }${
+                isActive
+                  ? "border-text-green text-text-green"
+                  : "border-grayish-blue text-Chinese-Black"
+              }`}
+            />
           </button>
         </div>
         <div className="hidden md:flex items-center rounded-full bg-[#EFEFEF] p-1 overflow-hidden">
@@ -186,11 +206,29 @@ const Navbar = () => {
           </NavLink>
           <div className="block md:hidden">
             <div className="flex gap-2 justify-center mt-2">
-              <button className="w-10 h-10 border border-grayish-blue rounded-full cursor-pointer flex items-center justify-center">
-                <img src={heart} className="" alt="" />
+              <button className="w-10 h-10 border border-grayish-blue rounded-full flex items-center cursor-pointer justify-center">
+                <Heart size={18} className="text-Chinese-Black" />
               </button>
-              <button className="w-10 h-10 border border-grayish-blue rounded-full cursor-pointer flex items-center justify-center">
-                <img src={cart} className="" alt="" />
+              <button
+                onClick={handleCartClick}
+                className={`w-10 h-10 border border-grayish-blue ${
+                  cartActive && "border-text-green"
+                }  rounded-full flex items-center cursor-pointer justify-center ${
+                  isActive
+                    ? "border-text-green text-text-green"
+                    : "border-grayish-blue text-Chinese-Black"
+                }`}
+              >
+                <Handbag
+                  size={18}
+                  className={`text-Chinese-Black ${
+                    cartActive && "text-text-green"
+                  } ${
+                    isActive
+                      ? "border-text-green text-text-green"
+                      : "border-grayish-blue text-Chinese-Black"
+                  }`}
+                />
               </button>
             </div>
             <div className="flex rounded-full bg-[#EFEFEF] p-1 mt-2">

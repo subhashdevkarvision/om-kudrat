@@ -5,7 +5,12 @@ import React from "react";
 const Products = () => {
   return (
     <div className="space-y-20 md:space-y-28">
-      <FrontSection />
+      <FrontSection
+        imgUrl="/product-header-img.png"
+        title="Products"
+        path="Home"
+        subPath={"Products"}
+      />
       <FeartureProductSection />
     </div>
   );
