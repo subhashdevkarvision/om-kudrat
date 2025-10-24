@@ -14,7 +14,7 @@ export const validateFields = (fileds) => {
 
 export const validateParams = (params) => {
   return (req, res, next) => {
-    const missings = params.filter((p) => !req.params[p]);
+    const missingParams = params.filter((p) => !req.params[p]);
     if (missingParams.length > 0) {
       return res.status(400).json({
         success: false,

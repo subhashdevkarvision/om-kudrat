@@ -1,10 +1,11 @@
 import express from "express";
-import { validateFields } from "../middleware/validation.js";
+import { validateFields, validateParams } from "../middleware/validation.js";
 import { upload } from "../middleware/multer.js";
 import {
   addProduct,
   getAllFilters,
   getAllProducts,
+  getProductById,
 } from "../controllers/productController.js";
 const productRouter = express.Router();
 
@@ -22,4 +23,5 @@ productRouter.post(
 );
 productRouter.get("/filters", getAllFilters);
 productRouter.get("/", getAllProducts);
+productRouter.get("/:id", validateParams(["id"]), getProductById);
 export default productRouter;

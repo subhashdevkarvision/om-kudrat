@@ -6,6 +6,7 @@ import userRouter from "./routers/userRouter.js";
 import categoryRouter from "./routers/categoryRouter.js";
 import languageRouter from "./routers/languageRouter.js";
 import productRouter from "./routers/productRouter.js";
+import cartRouter from "./routers/cartRouter.js";
 const app = express();
 
 app.use(express.json());
@@ -18,6 +19,7 @@ app.use("/auth", userRouter);
 app.use("/product", productRouter);
 app.use("/category", categoryRouter);
 app.use("/language", languageRouter);
+app.use("/cart", cartRouter);
 app.use("/", (req, res) => {
   res.send("api is working");
 });
