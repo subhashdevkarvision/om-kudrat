@@ -1,4 +1,6 @@
+import { fetchUserCart } from "@/api";
 import FrontSection from "@/components/frontSection/FrontSection";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,112 +8,134 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import React from "react";
+import { useQuery } from "@tanstack/react-query";
+import React, { useState } from "react";
 
 const CheckoutPage = () => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    mobile: "",
+    email: "",
+    houseNumStreetName: "",
+    apartment: "",
+    city: "",
+    postCode: "",
+    country: "",
+    additionalDetails: "",
+    shippingMethod: false,
+  });
+  const [errors, setErrors] = useState({});
+  const { data } = useQuery({
+    queryKey: ["userCart"],
+    queryFn: fetchUserCart,
+  });
+  const cartItems = data?.cartData || [];
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleCheckboxChange = (checked) => {
+    setFormData((prev) => ({ ...prev, shippingMethod: checked }));
+  };
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = "First name is required";
+    }
+    if (!formData.mobile.trim()) {
+      newErrors.mobile = "Phone number is required";
+    } else if (!/^[0-9]{10}$/.test(formData.mobile)) {
+      newErrors.mobile = "Enter a valid 10-digit number";
+    }
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (
+      !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email)
+    ) {
+      newErrors.email = "Enter a valid email";
+    }
+    if (!formData.houseNumStreetName.trim()) {
+      newErrors.houseNumStreetName = "Street address is required";
+    }
+    if (!formData.city.trim()) {
+      newErrors.city = "City is required";
+    }
+    if (!formData.postCode.trim()) {
+      newErrors.postCode = "Postcode is required";
+    }
+    if (!formData.country.trim()) {
+      newErrors.country = "Country is required";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      console.log(validateForm);
+      return;
+    }
+    console.log("submitted", formData);
+  };
+  const subTotal = cartItems.reduce((acc, item) => {
+    return acc + item.qty * item?.productId?.discountedPrice;
+  }, 0);
   return (
-    <div>
+    <div className="space-y-10">
       <FrontSection
         imgUrl="/product-header-img3.png"
         title="Checkout"
         path="Home"
         subPath="Cart"
       />
-      <div>
-        <div>
+      <form
+        action=""
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 sm:grid-cols-2 gap-5"
+      >
+        <div className="sm:border-r sm:pr-5 sm:border-r-[#D9D9D980]">
           <h5 className="text-2xl mb-5 text-Chinese-Black font-belfast">
             Delivery
           </h5>
-          <form action="">
-            <div className="grid grid-cols-1 sm:grid-cols-2 space-x-5 space-y-7">
-              <div>
-                <Label htmlFor="firstName">First name *</Label>
-                <Input
-                  name="firstName"
-                  type="text"
-                  placeholder="Enter First Name"
-                  className="text-grayish-blue border p-5 text-sm placeholder:text-grayish-blue border-grayish-blue"
-                />
-              </div>
-              <div>
-                <Label htmlFor="lastName">Last name</Label>
-                <Input
-                  name="lastName"
-                  type="text"
-                  placeholder="Enter Last Name"
-                  className="text-grayish-blue border p-5 text-sm placeholder:text-grayish-blue border-grayish-blue"
-                />
-              </div>
-              <div>
-                <Label htmlFor="mobile">Phone number *</Label>
-                <Input
-                  name="mobile"
-                  type="text"
-                  placeholder="Enter number"
-                  className="text-grayish-blue border p-5 text-sm placeholder:text-grayish-blue border-grayish-blue"
-                />
-              </div>
-              <div>
-                <Label htmlFor="email">Email address *</Label>
-                <Input
-                  name="email"
-                  type="text"
-                  placeholder="Enter email"
-                  className="text-grayish-blue border p-5 text-sm placeholder:text-grayish-blue border-grayish-blue"
-                />
-              </div>
-              <div>
-                <Label htmlFor="houseNumStreetName">Street Address *</Label>
-                <Input
-                  name="houseNumStreetName"
-                  type="text"
-                  placeholder="House number and street name"
-                  className="text-grayish-blue border p-5 text-sm placeholder:text-grayish-blue border-grayish-blue"
-                />
-              </div>
-              <div>
-                <Label htmlFor="apartment" className="">
-                  Apartment
-                </Label>
-                <Input
-                  name="apartment"
-                  type="text"
-                  placeholder="Apartment, suits, etc..."
-                  className="text-grayish-blue border p-5 text-sm placeholder:text-grayish-blue border-grayish-blue"
-                />
-              </div>
-              <div>
-                <Label htmlFor="city">Town / City *</Label>
-                <Input
-                  name="city"
-                  type="text"
-                  placeholder="Enter city"
-                  className="text-grayish-blue border p-5 text-sm placeholder:text-grayish-blue border-grayish-blue"
-                />
-              </div>
-              <div>
-                <Label htmlFor="postCode">Postcode *</Label>
-                <Input
-                  name="postCode"
-                  type="text"
-                  placeholder="Enter code"
-                  className="text-grayish-blue border p-5 text-sm placeholder:text-grayish-blue border-grayish-blue"
-                />
-              </div>
-              <div>
-                <Label htmlFor="country">Country *</Label>
-                <Input
-                  name="country"
-                  type="text"
-                  placeholder="Enter country"
-                  className="text-grayish-blue border p-5 text-sm placeholder:text-grayish-blue border-grayish-blue"
-                />
-              </div>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-7">
+              {[
+                { name: "firstName", label: "First name *" },
+                { name: "lastName", label: "Last name" },
+                { name: "mobile", label: "Phone number *" },
+                { name: "email", label: "Email address *" },
+                { name: "houseNumStreetName", label: "Street Address *" },
+                { name: "apartment", label: "Apartment" },
+                { name: "city", label: "Town / City *" },
+                { name: "postCode", label: "Postcode *" },
+                { name: "country", label: "Country *" },
+              ].map((field) => (
+                <div key={field.name} className="flex flex-col">
+                  <Label htmlFor={field.name}>{field.label}</Label>
+                  <Input
+                    name={field.name}
+                    type="text"
+                    value={formData[field.name]}
+                    onChange={handleChange}
+                    placeholder={`Enter ${field.label.replace("*", "").trim()}`}
+                    className={`text-grayish-blue border p-5 text-sm placeholder:text-grayish-blue border-grayish-blue ${
+                      errors[field.name] ? "border-red-500" : ""
+                    }`}
+                  />
+                  {errors[field.name] && (
+                    <span className="text-red-500 text-xs mt-1">
+                      {errors[field.name]}
+                    </span>
+                  )}
+                </div>
+              ))}
             </div>
             <h5 className="text-2xl mb-5 text-Chinese-Black font-belfast">
               Additional Information
@@ -120,6 +144,8 @@ const CheckoutPage = () => {
               <Label htmlFor="additionalDetails">Other Notes</Label>
               <Textarea
                 name="additionalDetails"
+                value={formData.additionalDetails}
+                onChange={handleChange}
                 placeholder="Notes about your order, e.g. special note for delivery."
                 className="border border-grayish-blue my-3"
               ></Textarea>
@@ -133,10 +159,14 @@ const CheckoutPage = () => {
               </Label>
               <div>
                 <span className="text-Chinese-Black mx-2">$10.00</span>
-                <Checkbox id="shippingMethod" />
+                <Checkbox
+                  id="shippingMethod"
+                  checked={formData.shippingMethod}
+                  onCheckedChange={handleCheckboxChange}
+                />
               </div>
             </div>
-          </form>
+          </>
         </div>
         <div>
           <h5 className="text-2xl mb-5 text-Chinese-Black font-belfast">
@@ -146,20 +176,77 @@ const CheckoutPage = () => {
             <TableHeader>
               <TableRow className="text-base text-Black-Olive">
                 <TableHead colSpan={2}>Products</TableHead>
-                <TableHead>Sub Total</TableHead>
+                <TableHead className="text-right">Sub Total</TableHead>
               </TableRow>
-              <TableBody>
-                <TableRow>
-                  <TableCell>
-                    <img src="/product1.png" className="size-24" alt="" />
-                  </TableCell>
-                  <TableCell className="font-belfast"></TableCell>
-                </TableRow>
-              </TableBody>
             </TableHeader>
+            <TableBody>
+              {cartItems.length > 0 ? (
+                cartItems.map((item) => (
+                  <TableRow key={item._id} className="">
+                    <TableCell className="py-10">
+                      <img
+                        src={`${import.meta.env.VITE_BACKEND_URL}${
+                          item?.productId?.image
+                        }`}
+                        className="size-24"
+                        alt=""
+                      />
+                    </TableCell>
+                    <TableCell className="font-belfast text-2xl">
+                      {item?.productId?.name} x <span>{item.qty}</span>
+                    </TableCell>
+                    <TableCell className="text-2xl text-text-green font-medium text-right">
+                      ${item?.productId?.discountedPrice}
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell>Empty Cart</TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+            <TableFooter>
+              <TableRow className="text-xl bg-white  text-Black-Olive">
+                <TableCell colSpan={2}>Sub Total</TableCell>
+                <TableCell className="text-right py-5">${subTotal}</TableCell>
+              </TableRow>
+              <TableRow className="text-2xl bg-white text-Black-Olive">
+                <TableCell colSpan={2}>Total</TableCell>
+                <TableCell className="text-right py-5">${subTotal}</TableCell>
+              </TableRow>
+            </TableFooter>
           </Table>
+          <div>
+            <div className="border-y pt-10 ">
+              <Label htmlFor="couponCode" className="text-base font-normal">
+                <span className="font-medium">Have a coupon ?</span> enter your
+                code
+              </Label>
+              <div className="flex items-center my-5">
+                <Input
+                  type="text"
+                  className="rounded-full px-5 border-grayish-blue placeholder:text-Black-Olive text-Black-Olive"
+                  placeholder="Coupon Code"
+                ></Input>
+                <Button
+                  variant="primary"
+                  className="w-fit rounded-full px-7 py-2"
+                >
+                  Apply
+                </Button>
+              </div>
+            </div>
+            <Button
+              variant="primary"
+              type="submit"
+              className="rounded-full py-5 my-10"
+            >
+              Place Order
+            </Button>
+          </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

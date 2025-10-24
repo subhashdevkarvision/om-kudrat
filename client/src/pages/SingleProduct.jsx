@@ -10,10 +10,12 @@ import OurBestSellingProducts from "@/components/OurBestSellingProducts";
 import axios from "axios";
 import { useParams } from "react-router";
 import QtyButton from "@/components/QtyButton";
+import { useAddToCart } from "@/hooks/userCart";
 
 const SingleProduct = () => {
   const [product, setProduct] = useState({});
   const { id } = useParams();
+  const addToCartMutation = useAddToCart();
   const fetchProduct = async (param) => {
     const res = await axios.get(
       `${import.meta.env.VITE_BACKEND_URL}/product/${param}`
@@ -22,9 +24,22 @@ const SingleProduct = () => {
       setProduct(res.data.data);
     }
   };
+  // const addToCart = async () => {
+  //   try {
+  //     const { data } = await axiosInstance.post("/cart/add-to-cart", {
+  //       productId: id,
+  //     });
+  //     if (data.success) {
+  //       fetchUserCart();
+  //       toast.success(data.message);
+  //     }
+  //   } catch (error) {
+  //     toast.error(error?.data?.message || "Something went wrong");
+  //   }
+  // };
   useEffect(() => {
     fetchProduct(id);
-  }, [id]);
+  }, []);
   return (
     <div className="space-y-20 md:space-y-28">
       <FrontSection
@@ -62,7 +77,11 @@ const SingleProduct = () => {
               </p>
               <div className="flex items-center">
                 <QtyButton />
-                <Button variant="primary" className="w-fit p-6 rounded-full">
+                <Button
+                  variant="primary"
+                  onClick={() => addToCartMutation.mutate(id)}
+                  className="w-fit p-6 rounded-full"
+                >
                   Add to cart
                 </Button>
               </div>

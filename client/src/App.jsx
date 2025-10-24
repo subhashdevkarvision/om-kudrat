@@ -13,8 +13,14 @@ import AuthLayout from "./components/layouts/AuthLayout";
 import Products from "./pages/Products";
 import SingleProduct from "./pages/SingleProduct";
 import CheckoutPage from "./pages/CheckoutPage";
+import PlaceOrder from "./pages/PlaceOrder";
+import ViewCartPage from "./pages/ViewCartPage";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 
 const App = () => {
+  const stripePromise = loadStripe(import.meta.env.VITE_PUBLISHABLE_KEY);
+
   return (
     <>
       <Toaster />
@@ -24,6 +30,15 @@ const App = () => {
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<SingleProduct />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route
+            path="/place-order"
+            element={
+              <Elements stripe={stripePromise}>
+                <PlaceOrder />
+              </Elements>
+            }
+          />
+          <Route path="/cart" element={<ViewCartPage />} />
         </Route>
         <Route path="/auth" element={<AuthLayout />}>
           <Route index element={<Login />} />
