@@ -1,26 +1,35 @@
 import React from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogClose,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Trash2 } from "lucide-react";
 import QtyButton from "../QtyButton";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router";
-import { useQuery } from "@tanstack/react-query";
-import { fetchUserCart } from "@/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchUserCart, removeFromCart } from "@/api";
+import { toast } from "sonner";
 
 const CartModel = ({ open, onClose }) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const removeCartMutation = useMutation({
+    mutationFn: removeFromCart,
+    onSuccess: (data) => {
+      toast.success(data.message);
+      queryClient.invalidateQueries(["userCart"]);
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
   const { data } = useQuery({
     queryKey: ["userCart"],
     queryFn: fetchUserCart,
   });
-  const cartItems = data?.cartData || [];
 
-  console.log("cart data", data);
+  const cartItems = data?.cartData || [];
+  const subTotal = cartItems.reduce((acc, item) => {
+    return acc + item.qty * item.productId.discountedPrice;
+  }, 0);
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="w-[400px]  bg-white rounded-2xl shadow-lg p-5 [&_button[data-slot=dialog-close]]:hidden">
@@ -30,14 +39,14 @@ const CartModel = ({ open, onClose }) => {
             cartItems.map((item) => (
               <div
                 key={item._id}
-                className="flex w-full items-center border-b pb-4 border-b-Light-Silver"
+                className="flex gap-5 w-full items-center border-b pb-4 border-b-Light-Silver"
               >
                 <div>
                   <img
                     src={`${import.meta.env.VITE_BACKEND_URL}${
                       item?.productId?.image
                     }`}
-                    className="size-24"
+                    className="w-32 h-24 rounded-2xl"
                     alt=""
                   />
                 </div>
@@ -55,8 +64,15 @@ const CartModel = ({ open, onClose }) => {
                     </p>
                   </div>
                   <div className="flex-col flex items-end justify-between">
-                    <Trash2 size={18} color="red" className="items-end" />
-                    <QtyButton className="p-4" />
+                    <Trash2
+                      onClick={() =>
+                        removeCartMutation.mutate(item.productId._id)
+                      }
+                      size={18}
+                      color="red"
+                      className="items-end"
+                    />
+                    <QtyButton id={item.productId._id} qty={item.qty} />
                   </div>
                 </div>
               </div>
@@ -67,10 +83,16 @@ const CartModel = ({ open, onClose }) => {
         </div>
         <div className="my-4 flex justify-between font-belfast text-base font-semibold">
           <span className="text-Chinese-Black">Sub Total</span>
-          <span className="text-text-green">$11232</span>
+          <span className="text-text-green">
+            {new Intl.NumberFormat("en-Us", {
+              style: "currency",
+              currency: "usd",
+            }).format(subTotal)}
+          </span>
         </div>
         <Button
           variant="primary"
+          disabled={cartItems.length === 0}
           onClick={() => {
             navigate("/checkout");
             onClose();
@@ -82,6 +104,7 @@ const CartModel = ({ open, onClose }) => {
         <Button
           variant="outline"
           className="rounded-full p-6 font-medium border-grayish-blue"
+          disabled={cartItems.length === 0}
           onClick={() => {
             navigate("/cart");
             onClose();

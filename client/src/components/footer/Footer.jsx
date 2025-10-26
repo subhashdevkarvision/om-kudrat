@@ -7,8 +7,10 @@ import twitter from "../../assets/twitter.png";
 import instagram from "../../assets/instagram.png";
 import footerLogo from "/footer-logo.svg";
 import pay from "../../assets/pay.png";
+import { useNavigate } from "react-router";
 
 const Footer = () => {
+  const navigate = useNavigate();
   return (
     <div>
       <div className="flex flex-col lg:flex-row gap-5 lg:justify-between">
@@ -25,6 +27,7 @@ const Footer = () => {
           </div>
           <Button
             variant="outline"
+            onClick={() => navigate("/contact")}
             className="flex justify-between font-poppins font-medium border-grayish-blue items-center rounded-full w-fit mt-3.5  gap-5 py-5"
           >
             <span className="ml-4">Find A Store</span>{" "}
@@ -35,7 +38,7 @@ const Footer = () => {
           <div>
             <p className="font-belfast text-2xl mb-3.5">Company</p>
             <ul className="font-poppins flex flex-col space-y-3.5 text-Black-Olive text-lg">
-              <li>About Us</li>
+              <li onClick={() => navigate("/about")}>About Us</li>
               <li>Shop</li>
               <li>Store Locations</li>
               <li>Our Blog</li>
@@ -55,8 +58,8 @@ const Footer = () => {
             <p className="font-belfast text-2xl mb-3.5">Information</p>
             <ul className="font-poppins flex flex-col space-y-3.5 text-Black-Olive text-lg">
               <li>Start a Return</li>
-              <li>Contact Us</li>
-              <li>Shipping FAQs</li>
+              <li onClick={() => navigate("/contact")}>Contact Us</li>
+              <li onClick={() => navigate("/faq")}>Shipping FAQs</li>
               <li>Terms & Conditions</li>
               <li>Privacy Policy</li>
             </ul>

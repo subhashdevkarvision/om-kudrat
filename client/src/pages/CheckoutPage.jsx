@@ -16,6 +16,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 
 const CheckoutPage = () => {
   const [formData, setFormData] = useState({
@@ -32,6 +33,7 @@ const CheckoutPage = () => {
     shippingMethod: false,
   });
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
   const { data } = useQuery({
     queryKey: ["userCart"],
     queryFn: fetchUserCart,
@@ -79,10 +81,9 @@ const CheckoutPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) {
-      console.log(validateForm);
       return;
     }
-    console.log("submitted", formData);
+    navigate("/place-order", { state: formData });
   };
   const subTotal = cartItems.reduce((acc, item) => {
     return acc + item.qty * item?.productId?.discountedPrice;

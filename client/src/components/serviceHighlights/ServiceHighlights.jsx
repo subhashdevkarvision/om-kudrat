@@ -1,29 +1,6 @@
-import { Package, Truck, MessagesSquare, CreditCard } from "lucide-react";
 
-const FEATURES = [
-  {
-    icon: <Package className="text-text-green" size={30} />,
-    title: "Free Shipping",
-    subtitle: "Free Shipping for order over $130.",
-  },
-  {
-    icon: <Truck className="text-text-green" size={30} />,
-    title: "Returns",
-    subtitle: "Within 30 days for an exchanges.",
-  },
-  {
-    icon: <MessagesSquare className="text-text-green" size={30} />,
-    title: "Online Support",
-    subtitle: "24 Hours a day, 7 Days a week",
-  },
-  {
-    icon: <CreditCard className="text-text-green" size={30} />,
-    title: "Flexible Payment",
-    subtitle: "Pay with Multiple Credit cards",
-  },
-];
 
-const ServiceHighlights = () => (
+const ServiceHighlights = ({ FEATURES }) => (
   <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
     {FEATURES.map((feature, idx) => (
       <div

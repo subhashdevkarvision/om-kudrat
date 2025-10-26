@@ -4,6 +4,9 @@ import logo from "../assets/logo.png";
 import { Button } from "./ui/button";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { UserRound, X, Handbag, Heart } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchUserCart } from "@/api";
+import { Badge } from "./ui/badge";
 
 const Navbar = ({ onCartClick, cartActive }) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -12,6 +15,14 @@ const Navbar = ({ onCartClick, cartActive }) => {
   const location = useLocation();
   const activePaths = ["/checkout", "/cart", "/place-order"];
   const isActive = activePaths.includes(location.pathname);
+  const activeWishlistPath = ["/wishlist"];
+  const isActiveWishlist = activeWishlistPath.includes(location.pathname);
+
+  const { data } = useQuery({
+    queryKey: ["userCart"],
+    queryFn: fetchUserCart,
+  });
+  const cartCount = data?.cartData?.length || null;
   const handleLogOut = () => {
     localStorage.removeItem("token");
     setIsAuth(false);
@@ -83,12 +94,26 @@ const Navbar = ({ onCartClick, cartActive }) => {
       {/* Icons & Login/Register */}
       <div className="flex items-center gap-4">
         <div className="hidden md:flex ">
-          <button className="w-10 h-10 border border-grayish-blue rounded-full flex items-center cursor-pointer justify-center">
-            <Heart size={18} className="text-Chinese-Black" />
+          <button
+            className={`w-10 h-10 border border-grayish-blue rounded-full flex items-center cursor-pointer justify-center ${
+              isActiveWishlist
+                ? "border-text-green text-text-green"
+                : "border-grayish-blue text-Chinese-Black"
+            }`}
+            onClick={() => navigate("/wishlist")}
+          >
+            <Heart
+              size={18}
+              className={`text-Chinese-Black ${
+                isActiveWishlist
+                  ? "border-text-green text-text-green"
+                  : "border-grayish-blue text-Chinese-Black"
+              }`}
+            />
           </button>
           <button
             onClick={handleCartClick}
-            className={`w-10 h-10 border border-grayish-blue ${
+            className={`w-10 h-10 border relative border-grayish-blue ${
               cartActive && "border-text-green"
             }  rounded-full flex items-center cursor-pointer justify-center ${
               isActive
@@ -106,6 +131,11 @@ const Navbar = ({ onCartClick, cartActive }) => {
                   : "border-grayish-blue text-Chinese-Black"
               }`}
             />
+            {cartCount && (
+              <Badge className="absolute -top-2.5 -right-2 text-xs px-1.5 bg-text-green text-white">
+                {cartCount}
+              </Badge>
+            )}
           </button>
         </div>
         <div className="hidden md:flex items-center rounded-full bg-[#EFEFEF] p-1 overflow-hidden">
@@ -206,8 +236,22 @@ const Navbar = ({ onCartClick, cartActive }) => {
           </NavLink>
           <div className="block md:hidden">
             <div className="flex gap-2 justify-center mt-2">
-              <button className="w-10 h-10 border border-grayish-blue rounded-full flex items-center cursor-pointer justify-center">
-                <Heart size={18} className="text-Chinese-Black" />
+              <button
+                className={`w-10 h-10 border border-grayish-blue rounded-full flex items-center cursor-pointer justify-center ${
+                  isActiveWishlist
+                    ? "border-text-green text-text-green"
+                    : "border-grayish-blue text-Chinese-Black"
+                }`}
+                onClick={() => navigate("/wishlist")}
+              >
+                <Heart
+                  size={18}
+                  className={`text-Chinese-Black ${
+                    isActiveWishlist
+                      ? "border-text-green text-text-green"
+                      : "border-grayish-blue text-Chinese-Black"
+                  }`}
+                />
               </button>
               <button
                 onClick={handleCartClick}

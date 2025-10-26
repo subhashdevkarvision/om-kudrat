@@ -23,11 +23,16 @@ cartRouter.post(
   increseQuantity
 );
 cartRouter.post(
-  "/descrease/:productId",
+  "/decrease/:productId",
   userAuth,
   validateParams(["productId"]),
   decrementQuantity
 );
-cartRouter.delete("/", userAuth, validateParams(["productId"]), removeFromCart);
+cartRouter.delete(
+  "/:productId",
+  userAuth,
+  validateParams(["productId"]),
+  removeFromCart
+);
 
 export default cartRouter;

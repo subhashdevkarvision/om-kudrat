@@ -1,6 +1,4 @@
 import axios from "axios";
-// import { queryClient } from "./main";
-// import { useMutation } from "@tanstack/react-query";
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
 });
@@ -15,12 +13,6 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// const { mutate: addToCartMutate } = useMutation({
-//   mutationFn: addToCart,
-//   onSuccess: () => {
-//     queryClient.invalidateQueries(["userCart"]);
-//   },
-// });
 export const fetchUserCart = async () => {
   const { data } = await axiosInstance.get("/cart");
   return data;
@@ -33,7 +25,32 @@ export const addToCart = async (id) => {
   return data;
 };
 
-export const removeFromCart = async (id) => {
-  const { data } = await axiosInstance.delete("/cart", { productId: id });
+export const removeFromCart = async (productId) => {
+  const { data } = await axiosInstance.delete(`/cart/${productId}`);
+  return data;
+};
+
+export const incrementQty = async (productId) => {
+  const { data } = await axiosInstance.post(`/cart/increase/${productId}`);
+  return data;
+};
+
+export const decrementQty = async (productId) => {
+  const { data } = await axiosInstance.post(`/cart/decrease/${productId}`);
+  return data;
+};
+
+export const addToWishlist = async (id) => {
+  const { data } = await axiosInstance.post("/wishlist", {
+    productId: id,
+  });
+  return data;
+};
+export const removeFromWishlist = async (productId) => {
+  const { data } = await axiosInstance.delete(`/wishlist/${productId}`);
+  return data;
+};
+export const fetchUserWishlist = async () => {
+  const { data } = await axiosInstance.get("/wishlist");
   return data;
 };

@@ -1,17 +1,26 @@
 import React from "react";
-import product3 from "../../assets/product3.png";
+import { useNavigate } from "react-router";
 
-const TrendingProductCard = () => {
+const TrendingProductCard = ({ image, name, price, discountedPrice, id }) => {
+  const navigate = useNavigate();
+  const handleClick = () => {
+    window.scrollTo(0, 0);
+    navigate(`/products/${id}`);
+  };
   return (
-    <div className="flex gap-5 items-center">
-      <img src={product3} className="size-44" alt="" />
+    <div onClick={handleClick} className="flex gap-5 items-center">
+      <img
+        src={`${import.meta.env.VITE_BACKEND_URL}${image}`}
+        className="size-44"
+        alt=""
+      />
       <div>
         <p className="font-poppins font-medium text-lg text-Chinese-Black">
-          White Musterd
+          {name}
         </p>
-        <span className="text-grayish-blue text-xs line-through">$20.50</span>
+        <span className="text-grayish-blue text-xs line-through">${price}</span>
         <p className="font-poppins font-medium text-lg text-text-green">
-          $16.50
+          ${discountedPrice}
         </p>
       </div>
     </div>

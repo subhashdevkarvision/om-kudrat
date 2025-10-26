@@ -14,19 +14,32 @@ import QtyButton from "@/components/QtyButton";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
-import { fetchUserCart } from "@/api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchUserCart, removeFromCart } from "@/api";
 import { useNavigate } from "react-router";
-import { useRemoveFromCart } from "@/hooks/userCart";
+import { toast } from "sonner";
 
 const ViewCartPage = () => {
   const navigate = useNavigate();
-  const removeFromCartMutation = useRemoveFromCart();
+  const queryClient = useQueryClient();
+
   const { data } = useQuery({
     queryKey: ["userCart"],
     queryFn: fetchUserCart,
   });
+  const removeCartMutation = useMutation({
+    mutationFn: removeFromCart,
+    onSuccess: (data) => {
+      toast.success(data.message);
+      queryClient.invalidateQueries(["userCart"]);
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+
   const cartItems = data?.cartData || [];
+
   const subTotal = cartItems.reduce((acc, item) => {
     return acc + item.productId.discountedPrice * item.qty;
   }, 0);
@@ -44,16 +57,16 @@ const ViewCartPage = () => {
             Shopping bag
           </h5>
           <Table>
-            <TableBody>
+            <TableBody className="text-center text-xl">
               {cartItems.length > 0 ? (
                 cartItems.map((item) => (
-                  <TableRow key={item._id} className="text-base ">
+                  <TableRow key={item._id} className=" ">
                     <TableCell>
                       <CircleX
-                        className="cursor-pointer"
                         onClick={() =>
-                          removeFromCartMutation.mutate(item?.productId?._id)
+                          removeCartMutation.mutate(item?.productId?._id)
                         }
+                        className="cursor-pointer"
                       />
                     </TableCell>
                     <TableCell className="w-24 py-10">
@@ -65,15 +78,25 @@ const ViewCartPage = () => {
                         alt=""
                       />
                     </TableCell>
-                    <TableCell className="font-belfast text-left ">
+                    <TableCell className="font-belfast text-left w-52 ">
                       {item?.productId?.name}
                     </TableCell>
-                    <TableCell>${item?.productId?.discountedPrice}</TableCell>
-                    <TableCell>
-                      <QtyButton className="py-2" />
+                    <TableCell className="font-medium text-Black-Olive">
+                      ${item?.productId?.discountedPrice}
                     </TableCell>
-                    <TableCell className=" text-text-green">
-                      ${item?.productId?.discountedPrice * item.qty}
+                    <TableCell className="">
+                      <QtyButton
+                        className="w-fit text-center mx-auto"
+                        qty={item.qty}
+                        id={item.productId._id}
+                      />
+                    </TableCell>
+                    <TableCell className=" text-text-green font-medium">
+                      $
+                      {new Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "usd",
+                      }).format(item?.productId?.discountedPrice * item.qty)}
                     </TableCell>
                   </TableRow>
                 ))
@@ -94,23 +117,31 @@ const ViewCartPage = () => {
               <div className="flex justify-between  mb-6">
                 <p className="font-medium text-Chinese-Black">Subtotal</p>
                 <p className="font-medium text-2xl text-Chinese-Black">
-                  {subTotal.toFixed(2)}
+                  {new Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "usd",
+                  }).format(subTotal)}
                 </p>
               </div>
               <div className="grid grid-cols-2 py-5  border-y">
                 <p className="font-medium text-Chinese-Black">Includes CGST</p>
                 <p className="font-medium text-xl text-right text-Chinese-Black">
-                  $32.12
+                  {subTotal ? "$32.12" : "$0"}
                 </p>
                 <p className="font-medium text-Chinese-Black">Includes SGST</p>
                 <p className="font-medium text-xl text-right text-Chinese-Black">
-                  $32.12
+                  {subTotal ? "$32.12" : "$0"}
                 </p>
               </div>
               <div className="flex justify-between mt-6 ">
                 <p className="font-medium text-Chinese-Black">Total</p>
                 <p className="font-medium text-2xl text-text-green">
-                  {(subTotal + 32.12 + 32.12).toFixed(2)}
+                  {subTotal
+                    ? new Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "usd",
+                      }).format(subTotal + 32.12 + 32.12)
+                    : "$0"}
                 </p>
               </div>
             </div>

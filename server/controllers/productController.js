@@ -2,6 +2,7 @@ import categoryModel from "../models/categoryModel.js";
 import productModel from "../models/productModel.js";
 import languageModel from "../models/languageModel.js";
 import mongoose from "mongoose";
+import orderModel from "../models/orderModel.js";
 export const addProduct = async (req, res) => {
   try {
     const { name, price, discountedPrice, categoryId, languageId } = req.body;
@@ -293,5 +294,85 @@ export const getProductById = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const getNewProductsByCategory = async (req, res) => {
+  try {
+    const { category } = req.query;
+    const limit = 8;
+
+    let filter = {};
+
+    if (category && category.toLowerCase() !== "all") {
+      const categoryDoc = await categoryModel.findOne({
+        name: category,
+      });
+
+      if (categoryDoc) {
+        filter.categoryId = categoryDoc._id;
+      } else {
+        return res.status(404).json({
+          success: false,
+          message: "Category not found",
+          products: [],
+        });
+      }
+    }
+
+    const newProducts = await productModel
+      .find(filter)
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .populate("categoryId", "name");
+
+    res.status(200).json({
+      success: true,
+      message: "New products fetched successfully",
+      products: newProducts,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+export const getBestSellingProducts = async (req, res) => {
+  try {
+    const bestSellingProducts = await orderModel.aggregate([
+      { $unwind: "$cartItems" },
+      {
+        $group: {
+          _id: "$cartItems.productId",
+          totalqty: { $sum: "$cartItems.qty" },
+        },
+      },
+      { $sort: { totalqty: -1 } },
+      { $limit: 4 },
+      {
+        $lookup: {
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "result",
+        },
+      },
+      { $unwind: "$result" },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: ["$result", { totalqty: "$totalqty" }],
+          },
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      message: "Top 5 best selling products",
+      products: bestSellingProducts,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };

@@ -1,4 +1,4 @@
-import { cartModel } from "../models/cartModel.js";
+import cartModel from "../models/cartModel.js";
 
 export const addToCart = async (req, res) => {
   try {
@@ -13,7 +13,7 @@ export const addToCart = async (req, res) => {
       await existingCart.save();
       return res
         .status(200)
-        .json({ success: true, message: "product qty increased" });
+        .json({ success: true, message: "Product Quantity increased" });
     }
     const cart = new cartModel({ productId, userId, qty: 1 });
     await cart.save();
@@ -27,7 +27,7 @@ export const addToCart = async (req, res) => {
 
 // remove from cart
 export const removeFromCart = async (req, res) => {
-  const { productId } = req.body;
+  const { productId } = req.params;
   const userId = req.user.id;
   try {
     const product = await cartModel.findOneAndDelete({ productId, userId });

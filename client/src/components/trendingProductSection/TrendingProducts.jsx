@@ -1,10 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import IconBadgeGreen from "../IconsBadgeGreen";
 import TrendingProductCard from "./TrendingProductCard";
 import product4 from "../../assets/product4.png";
 import { Button } from "../ui/button";
+import { axiosInstance } from "@/api";
+import { useNavigate } from "react-router";
 
 const TrendingProducts = () => {
+  const navigate = useNavigate();
+  const [trendingProducts, setTrendingProducts] = useState([]);
+  const fetchTrandingProducts = async () => {
+    const { data } = await axiosInstance.get("/best-selling");
+    if (data.success) {
+      setTrendingProducts(data.products);
+    }
+  };
+  const handleClick = (id) => {
+    window.scrollTo(0, 0);
+    navigate(`/products/${id}`);
+  };
+  useEffect(() => {
+    fetchTrandingProducts();
+  }, []);
   return (
     <div className="flex flex-col lg:flex-row gap-8">
       <div className="w-full lg:w-[70%]">
@@ -13,13 +30,23 @@ const TrendingProducts = () => {
           Trending Products
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
-          <TrendingProductCard />
-          <TrendingProductCard />
-          <TrendingProductCard />
-          <TrendingProductCard />
+          {trendingProducts.length > 0 &&
+            trendingProducts.map((item, id) => (
+              <TrendingProductCard
+                key={id}
+                image={item.image}
+                name={item.name}
+                price={item.price}
+                discountedPrice={item.discountedPrice}
+                id={item._id}
+              />
+            ))}
         </div>
       </div>
-      <div className="w-full lg:w-[30%] bg-text-green px-5 py-4 rounded-2xl flex flex-col items-center justify-center space-y-3 mt-6 md:mt-0">
+      <div
+        onClick={() => handleClick("68f0cd73bb5ebbe7aab2ac49")}
+        className="w-full lg:w-[30%] bg-text-green px-5 py-4 rounded-2xl flex flex-col items-center justify-center space-y-3 mt-6 md:mt-0"
+      >
         <h5 className="font-belfast text-2xl text-white">Deal Of The Week</h5>
         <img
           src={product4}

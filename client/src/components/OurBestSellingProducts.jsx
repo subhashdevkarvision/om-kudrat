@@ -5,10 +5,17 @@ import { MoveRight } from "lucide-react";
 import BestSellingProductCard from "./bestSellingProductCard";
 import axios from "axios";
 import { useNavigate } from "react-router";
+import { useQuery } from "@tanstack/react-query";
+import { fetchUserWishlist } from "@/api";
 
 const OurBestSellingProducts = () => {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
+  const { data } = useQuery({
+    queryKey: ["userWishlist"],
+    queryFn: fetchUserWishlist,
+  });
+
   const getAllProducts = async () => {
     try {
       const res = await axios.get(
@@ -17,8 +24,8 @@ const OurBestSellingProducts = () => {
       if (res.data.success) {
         setProducts(res.data.products);
       }
+      // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      console.log(error);
       setProducts([]);
     }
   };
@@ -45,15 +52,21 @@ const OurBestSellingProducts = () => {
       </div>
       <div className="flex flex-wrap justify-center gap-5 mt-10 md:gap-0 md:justify-between">
         {products.length > 0 ? (
-          products.map((item) => (
-            <BestSellingProductCard
-              id={item._id}
-              key={item._id}
-              imgUrl={item.image}
-              name={item.name}
-              price={item.discountedPrice}
-            />
-          ))
+          products.map((item) => {
+            const isInWishlist = data?.wishlistData?.some(
+              (w) => w.productId._id === item._id
+            );
+            return (
+              <BestSellingProductCard
+                id={item._id}
+                key={item._id}
+                imgUrl={item.image}
+                name={item.name}
+                price={item.discountedPrice}
+                isInWishlist={isInWishlist}
+              />
+            );
+          })
         ) : (
           <p>No product found</p>
         )}

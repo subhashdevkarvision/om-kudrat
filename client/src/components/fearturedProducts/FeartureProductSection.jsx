@@ -93,8 +93,8 @@ const FeartureProductSection = () => {
           setTotalPages(res.data.totalPages);
         }
       }
+    // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      console.log(error);
       setProducts([]);
       setTotalPages(1);
     }
@@ -271,7 +271,7 @@ const FeartureProductSection = () => {
         </div>
         {/* card main section */}
         <div className="flex flex-col space-y-5">
-          <div className="flex gap-x-2 gap-y-8 flex-wrap justify-center lg:justify-between">
+          <div className="flex gap-x-2 gap-y-8 flex-wrap justify-center lg:justify-start lg:gap-x-6">
             {products.length > 0 ? (
               products.map((product) => (
                 <FeartureProductCard

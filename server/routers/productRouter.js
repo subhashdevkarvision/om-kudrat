@@ -5,6 +5,7 @@ import {
   addProduct,
   getAllFilters,
   getAllProducts,
+  getNewProductsByCategory,
   getProductById,
 } from "../controllers/productController.js";
 const productRouter = express.Router();

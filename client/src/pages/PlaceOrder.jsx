@@ -1,11 +1,17 @@
+import { axiosInstance } from "@/api";
 import FrontSection from "@/components/frontSection/FrontSection";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import {
+  CardElement,
+  PaymentElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
 import React, { useState } from "react";
 
-const PlaceOrder = () => {
+const PlaceOrder = ({ orderId }) => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -18,6 +24,9 @@ const PlaceOrder = () => {
     country: "",
   });
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
   const stripe = useStripe();
   const elements = useElements();
   const handleChange = (e) => {
@@ -56,13 +65,34 @@ const PlaceOrder = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  const handleSubmit = (e) => {
+  console.log("orderid", orderId);
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
-      console.log(validateForm);
       return;
     }
     console.log("submitted", formData);
+    if (!stripe || !elements) {
+      return;
+    }
+    setLoading(true);
+    setMessage("");
+    const { data } = await axiosInstance.put("/payment", {
+      orderId,
+      billingDetails: formData,
+    });
+    if (!data.success) {
+      return;
+    }
+    const { error } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        return_url: `${import.meta.env.VITE_FRONTEND_URL}/payment-result`,
+      },
+    });
+    if (error) {
+      setMessage(error.message || "Something went wrong.");
+    }
   };
   return (
     <div className="space-y-10">
@@ -116,7 +146,7 @@ const PlaceOrder = () => {
             Payment
           </h5>
           <p className="text-base font-belfast mb-2.5">Card Payment</p>
-          <CardElement className="p-5 border rounded-lg border-grayish-blue" />
+          <PaymentElement className="p-5 border rounded-lg border-grayish-blue" />
           {/* <div>
             <Input
               name="cardNumber"
@@ -153,9 +183,21 @@ const PlaceOrder = () => {
             variant="primary"
             type="submit"
             className="rounded-full py-6 my-5"
+            disabled={!stripe || loading}
           >
-            Pay Now
+            {loading ? "Processing..." : "Pay Now"}
           </Button>
+          {message && (
+            <p
+              className={`mt-4 text-center font-medium ${
+                message.includes("successful")
+                  ? "text-green-600"
+                  : "text-red-600"
+              }`}
+            >
+              {message}
+            </p>
+          )}
         </div>
       </form>
     </div>

@@ -17,6 +17,12 @@ import PlaceOrder from "./pages/PlaceOrder";
 import ViewCartPage from "./pages/ViewCartPage";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import ContactUs from "./pages/ContactUs";
+import AboutUs from "./pages/AboutUs";
+import FaqPage from "./pages/FaqPage";
+import WishlistPage from "./pages/wishlistPage";
+import PlaceOrderPage from "./pages/PlaceOrderPage";
+import PaymentResultPage from "./pages/PaymentResultPage";
 
 const App = () => {
   const stripePromise = loadStripe(import.meta.env.VITE_PUBLISHABLE_KEY);
@@ -30,15 +36,20 @@ const App = () => {
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<SingleProduct />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+
           <Route
             path="/place-order"
             element={
               <Elements stripe={stripePromise}>
-                <PlaceOrder />
+                <PlaceOrderPage />
               </Elements>
             }
           />
           <Route path="/cart" element={<ViewCartPage />} />
+          <Route path="/contact" element={<ContactUs />} />
+          <Route path="/about" element={<AboutUs />} />
+          <Route path="/faq" element={<FaqPage />} />
+          <Route path="/wishlist" element={<WishlistPage />} />
         </Route>
         <Route path="/auth" element={<AuthLayout />}>
           <Route index element={<Login />} />
@@ -48,6 +59,14 @@ const App = () => {
           <Route path="/auth/reset-password" element={<ResetPassword />} />
           <Route path="/auth/register" element={<Register />} />
         </Route>
+        <Route
+          path="/payment-result"
+          element={
+            <Elements stripe={stripePromise}>
+              <PaymentResultPage />
+            </Elements>
+          }
+        />
       </Routes>
     </>
   );

@@ -1,7 +1,7 @@
 import FrontSection from "@/components/frontSection/FrontSection";
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
-import { Plus, Heart, Minus, Share2 } from "lucide-react";
+import { Heart, Minus, Share2 } from "lucide-react";
 import img1 from "../assets/product1.png";
 import img2 from "../assets/product2.png";
 import img3 from "../assets/product3.png";
@@ -10,12 +10,36 @@ import OurBestSellingProducts from "@/components/OurBestSellingProducts";
 import axios from "axios";
 import { useParams } from "react-router";
 import QtyButton from "@/components/QtyButton";
-import { useAddToCart } from "@/hooks/userCart";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  addToCart,
+  addToWishlist,
+  fetchUserCart,
+  fetchUserWishlist,
+} from "@/api";
+import { toast } from "sonner";
 
 const SingleProduct = () => {
   const [product, setProduct] = useState({});
   const { id } = useParams();
-  const addToCartMutation = useAddToCart();
+  const { data } = useQuery({
+    queryKey: ["userCart"],
+    queryFn: fetchUserCart,
+  });
+  const wishList = useQuery({
+    queryKey: ["userWishlist"],
+    queryFn: fetchUserWishlist,
+  });
+  const isProductAddedInWishlist = wishList?.data?.wishlistData?.some(
+    (item) => item.productId._id === id
+  );
+
+  const userCartItems = data?.cartData?.length > 0 ? data.cartData : [];
+  const cartProduct = userCartItems.find((item) => item.productId._id === id);
+  const isProductAdded = userCartItems.some(
+    (item) => item.productId._id === id
+  );
+  console.log(isProductAdded);
   const fetchProduct = async (param) => {
     const res = await axios.get(
       `${import.meta.env.VITE_BACKEND_URL}/product/${param}`
@@ -24,19 +48,28 @@ const SingleProduct = () => {
       setProduct(res.data.data);
     }
   };
-  // const addToCart = async () => {
-  //   try {
-  //     const { data } = await axiosInstance.post("/cart/add-to-cart", {
-  //       productId: id,
-  //     });
-  //     if (data.success) {
-  //       fetchUserCart();
-  //       toast.success(data.message);
-  //     }
-  //   } catch (error) {
-  //     toast.error(error?.data?.message || "Something went wrong");
-  //   }
-  // };
+
+  const queryClient = useQueryClient();
+  const addToCartMutation = useMutation({
+    mutationFn: addToCart,
+    onSuccess: (data) => {
+      toast.success(data.message);
+      queryClient.invalidateQueries(["userCart"]);
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
+  const addToWishlistMutation = useMutation({
+    mutationFn: addToWishlist,
+    onSuccess: (data) => {
+      toast.success(data.message);
+      queryClient.invalidateQueries(["userWishlist"]);
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    },
+  });
   useEffect(() => {
     fetchProduct(id);
   }, []);
@@ -76,11 +109,16 @@ const SingleProduct = () => {
                 jeans and leather sandals for a relaxed and...
               </p>
               <div className="flex items-center">
-                <QtyButton />
+                <QtyButton
+                  className={`p-1.5 ${!isProductAdded ? "hidden" : "block"}`}
+                  id={product._id}
+                  qty={cartProduct?.qty || 1}
+                />
                 <Button
                   variant="primary"
                   onClick={() => addToCartMutation.mutate(id)}
-                  className="w-fit p-6 rounded-full"
+                  className="w-fit p-6 rounded-full cursor-pointer"
+                  disabled={isProductAdded}
                 >
                   Add to cart
                 </Button>
@@ -89,11 +127,18 @@ const SingleProduct = () => {
                 <Button
                   variant="outline"
                   className="rounded-full p-5 items-center "
+                  onClick={() => addToWishlistMutation.mutate(id)}
                 >
                   <span className="text-base font-normal text-Black-Olive mr-12">
-                    Add to wishlist
+                    {isProductAddedInWishlist
+                      ? "Remove from wishlist"
+                      : "Add to wishlist"}
                   </span>
-                  <Heart size={24} className="text-text-green" />
+                  <Heart
+                    size={24}
+                    fill={isProductAddedInWishlist ? "#018d43" : "#ffffff"}
+                    className="text-text-green"
+                  />
                 </Button>
                 <Button variant="ghost" className="">
                   <Share2 size={20} />
