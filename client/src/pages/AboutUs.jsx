@@ -18,6 +18,7 @@ import trophy from "../assets/trophy.svg";
 import user from "../assets/user.svg";
 import rating from "../assets/rating.svg";
 import pistachio from "../assets/pistachio.svg";
+import Testimonial from "@/components/testimonial/Testimonial";
 
 const AboutUs = () => {
   const card = [
@@ -73,7 +74,7 @@ const AboutUs = () => {
     },
   ];
   return (
-    <div className="space-y-10">
+    <div className="space-y-10 sm:space-y-32">
       <FrontSection
         imgUrl="/about-us-header.png"
         title="About Us"
@@ -170,8 +171,8 @@ const AboutUs = () => {
         </div>
       </div>
       {/* faqs  */}
-      <div className="flex flex-col sm:justify-between  sm:flex-row">
-        <div className="w-full flex flex-col justify-between sm:w-[30%] space-y-4">
+      <div className="flex flex-col gap-5 sm:gap-0 sm:justify-between  sm:flex-row">
+        <div className="w-full flex  flex-col sm:justify-between sm:w-[30%] space-y-4">
           <div>
             <IconBadge title="About Om Kudrat" />
             <h3 className="font-belfast text-4xl">
@@ -187,6 +188,7 @@ const AboutUs = () => {
           <FaqsComponent />
         </div>
       </div>
+      <Testimonial />
     </div>
   );
 };

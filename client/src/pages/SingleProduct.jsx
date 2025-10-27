@@ -3,12 +3,12 @@ import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
 import { Heart, Minus, Share2 } from "lucide-react";
 import img1 from "../assets/product1.png";
-import img2 from "../assets/product2.png";
+import img2 from "../assets/product4.png";
 import img3 from "../assets/product3.png";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import OurBestSellingProducts from "@/components/OurBestSellingProducts";
 import axios from "axios";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import QtyButton from "@/components/QtyButton";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -18,10 +18,24 @@ import {
   fetchUserWishlist,
 } from "@/api";
 import { toast } from "sonner";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode, Navigation, Thumbs } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/free-mode";
+import "swiper/css/navigation";
+import "swiper/css/thumbs";
 
 const SingleProduct = () => {
   const [product, setProduct] = useState({});
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const galaries = [
+    { image: `${import.meta.env.VITE_BACKEND_URL}${product.image}` },
+    { image: img1 },
+    { image: img2 },
+    { image: img3 },
+  ];
   const { id } = useParams();
+  const navigate = useNavigate();
   const { data } = useQuery({
     queryKey: ["userCart"],
     queryFn: fetchUserCart,
@@ -39,7 +53,6 @@ const SingleProduct = () => {
   const isProductAdded = userCartItems.some(
     (item) => item.productId._id === id
   );
-  console.log(isProductAdded);
   const fetchProduct = async (param) => {
     const res = await axios.get(
       `${import.meta.env.VITE_BACKEND_URL}/product/${param}`
@@ -57,6 +70,9 @@ const SingleProduct = () => {
       queryClient.invalidateQueries(["userCart"]);
     },
     onError: (error) => {
+      if (error?.response?.data?.message === "You are not authorised") {
+        navigate("/auth");
+      }
       toast.error(error?.response?.data?.message || "Something went wrong");
     },
   });
@@ -67,6 +83,9 @@ const SingleProduct = () => {
       queryClient.invalidateQueries(["userWishlist"]);
     },
     onError: (error) => {
+      if (error?.response?.data?.message === "You are not authorised") {
+        navigate("/auth");
+      }
       toast.error(error?.response?.data?.message || "Something went wrong");
     },
   });
@@ -82,15 +101,21 @@ const SingleProduct = () => {
         imgUrl="/product-header-img2.png"
       />
       {product ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 justify-between">
-          <div>
-            <img
-              src={`${import.meta.env.VITE_BACKEND_URL}${product.image}`}
-              className="w-full"
-              alt=""
-            />
-          </div>
-          <div className="flex flex-col justify-between">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 justify-between">
+          <Swiper
+            loop={true}
+            spaceBetween={10}
+            thumbs={{ swiper: thumbsSwiper }}
+            modules={[FreeMode, Navigation, Thumbs]}
+            className="w-full rounded-2xl overflow-hidden"
+          >
+            {galaries.map((item, id) => (
+              <SwiperSlide key={id}>
+                <img src={item.image} className="lg:size-[640px]" alt="" />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+          <div className="flex flex-col-reverse lg:flex-col justify-between">
             <div>
               <h2 className="font-belfast text-4xl text-Chinese-Black mb-5">
                 {product.name}
@@ -151,11 +176,26 @@ const SingleProduct = () => {
                 </span>
               </p>
             </div>
-            <div className="flex flex-wrap gap-5 mt-2.5">
-              <img src={img1} className="size-28 rounded-2xl" alt="" />
-              <img src={img2} className="size-28 rounded-2xl" alt="" />
-              <img src={img3} className="size-28 rounded-2xl" alt="" />
-            </div>
+            <Swiper
+              onSwiper={setThumbsSwiper}
+              loop={true}
+              spaceBetween={10}
+              slidesPerView={4}
+              freeMode={true}
+              watchSlidesProgress={true}
+              modules={[FreeMode, Navigation, Thumbs]}
+              className="w-full"
+            >
+              {galaries.map((item, id) => (
+                <SwiperSlide key={id}>
+                  <img
+                    src={item.image}
+                    className="size-20 sm:size-28 cursor-pointer rounded-xl border border-gray-300 hover:border-green-500"
+                    alt=""
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
         </div>
       ) : (
@@ -167,19 +207,19 @@ const SingleProduct = () => {
           <TabsList className="bg-black rounded-t-2xl rounded-b-none flex flex-col sm:flex-row gap-4 px-2 py-0 h-full justify-center w-full">
             <TabsTrigger
               value="description"
-              className="font-belfast font-normal text-sm "
+              className="font-belfast cursor-pointer font-normal text-sm "
             >
               Description
             </TabsTrigger>
             <TabsTrigger
               value="additional"
-              className="font-belfast font-normal text-sm"
+              className="font-belfast cursor-pointer font-normal text-sm"
             >
               Additional Information
             </TabsTrigger>
             <TabsTrigger
               value="review"
-              className="font-belfast font-normal text-sm "
+              className="font-belfast cursor-pointer font-normal text-sm "
             >
               Review
             </TabsTrigger>

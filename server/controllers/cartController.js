@@ -25,7 +25,6 @@ export const addToCart = async (req, res) => {
   }
 };
 
-// remove from cart
 export const removeFromCart = async (req, res) => {
   const { productId } = req.params;
   const userId = req.user.id;
@@ -43,10 +42,8 @@ export const removeFromCart = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
-//  increament qty
 export const increseQuantity = async (req, res) => {
   const { productId } = req.params;
-  console.log(productId);
   const userId = req.user.id;
   try {
     const product = await cartModel.findOne({ productId, userId });
@@ -59,13 +56,12 @@ export const increseQuantity = async (req, res) => {
     await product.save();
     return res
       .status(200)
-      .json({ success: true, message: "increamented the quantity" });
+      .json({ success: true, message: "incremented the quantity" });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
 
-// decrement quantity
 export const decrementQuantity = async (req, res) => {
   const { productId } = req.params;
   const userId = req.user.id;
@@ -81,7 +77,7 @@ export const decrementQuantity = async (req, res) => {
       await product.save();
       return res
         .status(200)
-        .json({ success: true, message: "decreamented the quantity" });
+        .json({ success: true, message: "decremented the quantity" });
     } else {
       await cartModel.findOneAndDelete({ productId, userId });
       return res
@@ -93,7 +89,6 @@ export const decrementQuantity = async (req, res) => {
   }
 };
 
-// get user cart
 export const getUserCart = async (req, res) => {
   const userId = req.user.id;
   try {
@@ -106,7 +101,6 @@ export const getUserCart = async (req, res) => {
       cartData: userCart.length > 0 ? userCart : [],
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ success: false, message: error.message });
   }
 };

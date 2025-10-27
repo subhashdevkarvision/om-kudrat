@@ -51,8 +51,8 @@ const FaqsComponent = () => {
           <AccordionItem key={id} value={item.value}>
             <AccordionTrigger
               showChevronIcon={false}
-              className="flex justify-start gap-14 xl:my-7 text-xl group text-black transition-colors
-              data-[state=open]:text-text-green group"
+              className="flex justify-start gap-14 xl:my-4 text-xl group text-black transition-colors
+              data-[state=open]:text-text-green data-[state=open]:font-belfast group"
             >
               <span>
                 {" "}

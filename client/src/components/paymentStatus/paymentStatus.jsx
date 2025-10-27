@@ -9,50 +9,46 @@ const PaymentStatus = () => {
 
   useEffect(() => {
     const retrive = async () => {
-      try {
-        const queryParams = new URLSearchParams(window.location.href);
-        const clientSecret = queryParams.get("payment_intent_client_secret");
-        if (!stripe || !clientSecret) return;
+      const queryParams = new URLSearchParams(window.location.href);
+      const clientSecret = queryParams.get("payment_intent_client_secret");
+      if (!stripe || !clientSecret) return;
 
-        const { paymentIntent, error: retrieveError } =
-          await stripe.retrievePaymentIntent(clientSecret);
-        if (retrieveError) {
-          setStatus("error");
+      const { paymentIntent, error: retrieveError } =
+        await stripe.retrievePaymentIntent(clientSecret);
+      if (retrieveError) {
+        setStatus("error");
+        setMessage(
+          "Unable to retrieve payment status: " + retrieveError.message
+        );
+        return;
+      }
+      if (!paymentIntent) {
+        setStatus("error");
+        setMessage("PaymentIntent not found.");
+        return;
+      }
+      switch (paymentIntent.status) {
+        case "succeeded":
+          setStatus("succeeded");
+          setMessage("Payment succeeded. Thank you!");
+          break;
+
+        case "requires_payment_method":
+          setStatus("failed");
           setMessage(
-            "Unable to retrieve payment status: " + retrieveError.message
+            "Payment failed. Please try again with a different method."
           );
-          return;
-        }
-        if (!paymentIntent) {
+          break;
+
+        case "processing":
+          setStatus("processing");
+          setMessage("Payment is processing. We will update you soon.");
+          break;
+
+        default:
           setStatus("error");
-          setMessage("PaymentIntent not found.");
-          return;
-        }
-        switch (paymentIntent.status) {
-          case "succeeded":
-            setStatus("succeeded");
-            setMessage("Payment succeeded. Thank you!");
-            break;
-
-          case "requires_payment_method":
-            setStatus("failed");
-            setMessage(
-              "Payment failed. Please try again with a different method."
-            );
-            break;
-
-          case "processing":
-            setStatus("processing");
-            setMessage("Payment is processing. We will update you soon.");
-            break;
-
-          default:
-            setStatus("error");
-            setMessage("Unexpected payment status: " + paymentIntent.status);
-            break;
-        }
-      } catch (error) {
-        console.error("error", error);
+          setMessage("Unexpected payment status: " + paymentIntent.status);
+          break;
       }
     };
     retrive();

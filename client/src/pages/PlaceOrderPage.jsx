@@ -23,19 +23,20 @@ const PlaceOrderPage = () => {
       return acc + item.qty * item.productId.discountedPrice;
     }, 0);
     const { data } = await axiosInstance.post("/payment", {
-      amount: totalAmount,
+      amount: parseInt(totalAmount),
       cartItems,
       deliveryDetails: state,
     });
-    console.log(data);
     if (data.success) {
       setOrderId(data.orderId);
       setClientSecret(data.clientSecret);
     }
   };
   useEffect(() => {
-    createPaymentIntent();
-  }, []);
+    if (data?.cartData && data.cartData.length > 0) {
+      createPaymentIntent();
+    }
+  }, [data]);
   return (
     <>
       {clientSecret && orderId ? (

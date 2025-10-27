@@ -12,8 +12,12 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router";
+import OurBestSellingProducts from "@/components/OurBestSellingProducts";
+import ConfirmationDialog from "@/components/confirmationDialog/ConfirmationDialog";
 
 const WishlistPage = () => {
+  const navigate = useNavigate();
   const { data } = useQuery({
     queryKey: ["userWishlist"],
     queryFn: fetchUserWishlist,
@@ -59,8 +63,13 @@ const WishlistPage = () => {
                   key={item._id}
                   className="font-belfast text-Chinese-Black text-xl text-center"
                 >
-                  <TableCell colSpan={3} className="py-10">
-                    <div className="flex items-center gap-5">
+                  <TableCell colSpan={3} className="py-10 cursor-pointer">
+                    <div
+                      className="flex items-center gap-5 "
+                      onClick={() =>
+                        navigate(`/products/${item.productId._id}`)
+                      }
+                    >
                       <img
                         src={`${import.meta.env.VITE_BACKEND_URL}${
                           item?.productId?.image
@@ -76,11 +85,15 @@ const WishlistPage = () => {
                   </TableCell>
                   <TableCell className="">
                     <div className="flex justify-end">
-                      <Trash2
-                        onClick={() =>
+                      <ConfirmationDialog
+                        trigger={
+                          <Trash2 className="cursor-pointer text-[#FF0000]" />
+                        }
+                        title="Remove item from wishlist?"
+                        description="This will remove the product from your wishlist."
+                        onConfirm={() =>
                           removeWishlistMutation.mutate(item?.productId?._id)
                         }
-                        className="cursor-pointer text-[#FF0000]"
                       />
                     </div>
                   </TableCell>
@@ -94,6 +107,7 @@ const WishlistPage = () => {
           </TableBody>
         </Table>
       </div>
+      <OurBestSellingProducts />
     </div>
   );
 };

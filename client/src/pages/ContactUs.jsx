@@ -139,7 +139,6 @@ const ContactUs = () => {
         </form>
         <iframe
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3719.88243923789!2d72.84005977503634!3d21.196828580494863!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be04ef22a0178b1%3A0x2f02ec2c91fcd100!2sVision%20Infotech!5e0!3m2!1sen!2sin!4v1761454576286!5m2!1sen!2sin"
-          // style="border:0;"
           loading="lazy"
           className="w-full h-full rounded-3xl"
         ></iframe>

@@ -93,13 +93,12 @@ const FeartureProductSection = () => {
           setTotalPages(res.data.totalPages);
         }
       }
-    // eslint-disable-next-line no-unused-vars
+      // eslint-disable-next-line no-unused-vars
     } catch (error) {
       setProducts([]);
       setTotalPages(1);
     }
   };
-  // product checkbox handler
   const toggleProductId = (productId) => {
     setSelectedProductIds((prev) =>
       prev.includes(productId)

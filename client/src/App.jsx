@@ -23,33 +23,59 @@ import FaqPage from "./pages/FaqPage";
 import WishlistPage from "./pages/wishlistPage";
 import PlaceOrderPage from "./pages/PlaceOrderPage";
 import PaymentResultPage from "./pages/PaymentResultPage";
+import ProtectedRoute from "./components/auth/ProtectedRoutes";
+import ScrollToTop from "./components/ScrollToTop";
 
 const App = () => {
   const stripePromise = loadStripe(import.meta.env.VITE_PUBLISHABLE_KEY);
 
   return (
     <>
+      <ScrollToTop />
       <Toaster />
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<SingleProduct />} />
-          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <CheckoutPage />
+              </ProtectedRoute>
+            }
+          />
 
           <Route
             path="/place-order"
             element={
-              <Elements stripe={stripePromise}>
-                <PlaceOrderPage />
-              </Elements>
+              <ProtectedRoute>
+                <Elements stripe={stripePromise}>
+                  <PlaceOrderPage />
+                </Elements>
+              </ProtectedRoute>
             }
           />
-          <Route path="/cart" element={<ViewCartPage />} />
+          <Route
+            path="/cart"
+            element={
+              <ProtectedRoute>
+                <ViewCartPage />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/faq" element={<FaqPage />} />
-          <Route path="/wishlist" element={<WishlistPage />} />
+          <Route
+            path="/wishlist"
+            element={
+              <ProtectedRoute>
+                <WishlistPage />
+              </ProtectedRoute>
+            }
+          />
         </Route>
         <Route path="/auth" element={<AuthLayout />}>
           <Route index element={<Login />} />

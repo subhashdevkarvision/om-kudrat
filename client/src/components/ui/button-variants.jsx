@@ -6,20 +6,21 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        default:
+          "bg-primary cursor-pointer text-primary-foreground hover:bg-primary/90",
         destructive:
           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
-          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+          "border bg-background cursor-pointer shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "bg-secondary cursor-pointer text-secondary-foreground hover:bg-secondary/80",
         ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline",
+          "hover:bg-accent cursor-pointer hover:text-accent-foreground dark:hover:bg-accent/50",
+        link: "text-primary cursor-pointer underline-offset-4 hover:underline",
         primary:
-          "w-full cursor-pointer bg-text-green hover:bg-green-700 text-white py-5 rounded-lg transition",
+          "w-full cursor-pointer cursor-pointer bg-text-green hover:bg-green-700 text-white py-5 rounded-lg transition",
         explore:
-          "bg-white font-poppins text-Chinese-Black font-medium border border-grayish-blue rounded-full px-8 py-3 focus:outline-none focus:ring-2 focus:ring-gray-200 transition hover:border-gray-400",
+          "bg-white font-poppins cursor-pointer text-Chinese-Black font-medium border border-grayish-blue rounded-full px-8 py-3 focus:outline-none focus:ring-2 focus:ring-gray-200 transition hover:border-gray-400",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

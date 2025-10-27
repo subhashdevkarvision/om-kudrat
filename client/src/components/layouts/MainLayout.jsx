@@ -10,13 +10,18 @@ const MainLayout = () => {
     setIsCartOpen(!isCartOpen);
   };
   return (
-    <div className="px-4 py-4 font-poppins container max-w-7xl xl:px-0 mx-auto">
-      <Navbar onCartClick={handleCartClick} cartActive={isCartOpen} />
-      <CartModel open={isCartOpen} onClose={handleCartClick} />
-      <div className="mt-6 mb-20">
-        <Outlet />
+    <div>
+      <div className="fixed top-0 left-0 right-0 bg-white z-50 border-b border-gray-100">
+        <Navbar onCartClick={handleCartClick} cartActive={isCartOpen} />
       </div>
-      <Footer />
+      {/* Add padding-top equal to navbar height */}
+      <div className="px-4 pt-20 container max-w-7xl xl:px-0 mx-auto">
+        <CartModel open={isCartOpen} onClose={handleCartClick} />
+        <div className="mt-6 mb-20 font-poppins">
+          <Outlet />
+        </div>
+        <Footer />
+      </div>
     </div>
   );
 };

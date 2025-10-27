@@ -34,7 +34,7 @@ const BestSellingProductCard = ({ imgUrl, name, price, id, isInWishlist }) => {
   };
 
   return (
-    <div className="w-[250px] max-w-xs" onClick={handleClick}>
+    <div className="w-[250px] cursor-pointer max-w-xs" onClick={handleClick}>
       <div className="relative rounded-xl bg-[#F8F8F8] w-[250px] max-w-xs h-52">
         <img
           src={`${import.meta.env.VITE_BACKEND_URL}${imgUrl}`}

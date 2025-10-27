@@ -65,35 +65,47 @@ const PlaceOrder = ({ orderId }) => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  console.log("orderid", orderId);
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) {
-      return;
-    }
-    console.log("submitted", formData);
+    if (!validateForm()) return;
+
     if (!stripe || !elements) {
+      setMessage("Stripe is not loaded yet. Please wait...");
       return;
     }
+
     setLoading(true);
     setMessage("");
-    const { data } = await axiosInstance.put("/payment", {
-      orderId,
-      billingDetails: formData,
-    });
-    if (!data.success) {
-      return;
-    }
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${import.meta.env.VITE_FRONTEND_URL}/payment-result`,
-      },
-    });
-    if (error) {
-      setMessage(error.message || "Something went wrong.");
+
+    try {
+      const { data } = await axiosInstance.put("/payment", {
+        orderId,
+        billingDetails: formData,
+      });
+
+      if (!data.success) {
+        setMessage("Failed to save billing details.");
+        return;
+      }
+
+      const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: `${import.meta.env.VITE_FRONTEND_URL}/payment-result`,
+        },
+      });
+
+      if (error) {
+        setMessage(error.message || "Something went wrong.");
+      }
+      // eslint-disable-next-line no-unused-vars
+    } catch (err) {
+      setMessage("An unexpected error occurred.");
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
     <div className="space-y-10">
       <FrontSection
@@ -102,13 +114,16 @@ const PlaceOrder = ({ orderId }) => {
         path="Home"
         subPath="Cart"
       />
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2">
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 gap-10 lg:gap-24 sm:grid-cols-2"
+      >
         <div>
           <h5 className="text-2xl mb-5 text-Chinese-Black font-belfast">
             Billing Details
           </h5>
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 space-x-5 space-y-7">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-7">
               {[
                 { name: "firstName", label: "First name *" },
                 { name: "lastName", label: "Last name" },
@@ -124,9 +139,29 @@ const PlaceOrder = ({ orderId }) => {
                   <Label htmlFor={field.name}>{field.label}</Label>
                   <Input
                     name={field.name}
+                    type={field.name === "mobile" ? "tel" : "text"}
                     value={formData[field.name]}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      if (field.name === "mobile") {
+                        const numericValue = e.target.value.replace(/\D/g, "");
+                        setFormData((prev) => ({
+                          ...prev,
+                          [field.name]: numericValue,
+                        }));
+                      } else {
+                        handleChange(e);
+                      }
+                    }}
+                    onPaste={(e) => {
+                      if (field.name === "mobile") {
+                        const pasted = e.clipboardData.getData("text");
+                        if (!/^[0-9]*$/.test(pasted)) {
+                          e.preventDefault();
+                        }
+                      }
+                    }}
                     placeholder={`Enter ${field.label.replace("*", "").trim()}`}
+                    maxLength={field.name === "mobile" ? 10 : undefined}
                     className={`text-grayish-blue border p-5 text-sm placeholder:text-grayish-blue border-grayish-blue ${
                       errors[field.name] ? "border-red-500" : ""
                     }`}
@@ -147,38 +182,6 @@ const PlaceOrder = ({ orderId }) => {
           </h5>
           <p className="text-base font-belfast mb-2.5">Card Payment</p>
           <PaymentElement className="p-5 border rounded-lg border-grayish-blue" />
-          {/* <div>
-            <Input
-              name="cardNumber"
-              id="cardNumber"
-              type="text"
-              placeholder="Card Number"
-              className="text-grayish-blue border p-5 text-sm placeholder:text-grayish-blue border-grayish-blue"
-            />
-            <div className="grid grid-cols-2 gap-5">
-              <Input
-                name="expiryDate"
-                id="expiryDate"
-                type="text"
-                placeholder="Expiration date (MM/YY)"
-                className="text-grayish-blue border p-5 text-sm placeholder:text-grayish-blue border-grayish-blue"
-              />
-              <Input
-                name="securityCode"
-                id="securityCode"
-                type="text"
-                placeholder="Security Code"
-                className="text-grayish-blue border p-5 text-sm placeholder:text-grayish-blue border-grayish-blue"
-              />
-            </div>
-            <Input
-              name="cardHolderName"
-              id="cardHolderName"
-              type="text"
-              placeholder="Name Of Card Holder"
-              className="text-grayish-blue border p-5 text-sm placeholder:text-grayish-blue border-grayish-blue"
-            />
-          </div> */}
           <Button
             variant="primary"
             type="submit"

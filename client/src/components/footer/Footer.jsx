@@ -12,7 +12,7 @@ import { useNavigate } from "react-router";
 const Footer = () => {
   const navigate = useNavigate();
   return (
-    <div>
+    <div className="mb-5">
       <div className="flex flex-col lg:flex-row gap-5 lg:justify-between">
         <div className="w-full lg:w-[35%] flex flex-col justify-between">
           <div className="">
@@ -38,30 +38,49 @@ const Footer = () => {
           <div>
             <p className="font-belfast text-2xl mb-3.5">Company</p>
             <ul className="font-poppins flex flex-col space-y-3.5 text-Black-Olive text-lg">
-              <li onClick={() => navigate("/about")}>About Us</li>
-              <li>Shop</li>
-              <li>Store Locations</li>
-              <li>Our Blog</li>
-              <li>Reviews</li>
+              <li className="cursor-pointer" onClick={() => navigate("/about")}>
+                About Us
+              </li>
+              <li className="cursor-pointer">Shop</li>
+              <li
+                className="cursor-pointer"
+                onClick={() => navigate("/contact")}
+              >
+                Store Locations
+              </li>
+              <li className="cursor-pointer">Our Blog</li>
+              <li className="cursor-pointer">Reviews</li>
             </ul>
           </div>
           <div className="">
             <p className="font-belfast text-2xl mb-3.5">Useful Links</p>
             <ul className="font-poppins flex flex-col space-y-3.5 text-Black-Olive text-lg">
-              <li>New Products</li>
-              <li>Best Seller</li>
-              <li>Bundle & Save</li>
-              <li>Online Gift</li>
+              <li
+                className="cursor-pointer"
+                onClick={() => navigate("/products")}
+              >
+                New Products
+              </li>
+              <li className="cursor-pointer">Best Seller</li>
+              <li className="cursor-pointer">Bundle & Save</li>
+              <li className="cursor-pointer">Online Gift</li>
             </ul>
           </div>
           <div>
             <p className="font-belfast text-2xl mb-3.5">Information</p>
             <ul className="font-poppins flex flex-col space-y-3.5 text-Black-Olive text-lg">
-              <li>Start a Return</li>
-              <li onClick={() => navigate("/contact")}>Contact Us</li>
-              <li onClick={() => navigate("/faq")}>Shipping FAQs</li>
-              <li>Terms & Conditions</li>
-              <li>Privacy Policy</li>
+              <li className="cursor-pointer">Start a Return</li>
+              <li
+                className="cursor-pointer"
+                onClick={() => navigate("/contact")}
+              >
+                Contact Us
+              </li>
+              <li className="cursor-pointer" onClick={() => navigate("/faq")}>
+                Shipping FAQs
+              </li>
+              <li className="cursor-pointer">Terms & Conditions</li>
+              <li className="cursor-pointer">Privacy Policy</li>
             </ul>
           </div>
         </div>
@@ -94,10 +113,15 @@ const Footer = () => {
           </Button>
         </div>
         <div>
-          <img src={footerLogo} alt="" />
+          <img
+            src={footerLogo}
+            className="cursor-pointer"
+            onClick={() => navigate("/")}
+            alt=""
+          />
         </div>
         <div>
-          <img src={pay} alt="" />
+          <img src={pay} className="cursor-pointer" alt="" />
         </div>
       </div>
     </div>

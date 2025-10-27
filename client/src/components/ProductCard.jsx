@@ -32,7 +32,7 @@ const ProductCard = ({ id, image, title, price, isInWishlist }) => {
   };
 
   return (
-    <div onClick={handleClick} className="font-poppins">
+    <div onClick={handleClick} className="font-poppins cursor-pointer">
       <div
         style={{
           backgroundImage: `url(${import.meta.env.VITE_BACKEND_URL}${image})`,

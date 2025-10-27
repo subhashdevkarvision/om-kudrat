@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import { Button } from "./ui/button";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { UserRound, X, Handbag, Heart } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { fetchUserCart } from "@/api";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchUserCart, fetchUserWishlist } from "@/api";
 import { Badge } from "./ui/badge";
 
 const Navbar = ({ onCartClick, cartActive }) => {
@@ -17,15 +17,25 @@ const Navbar = ({ onCartClick, cartActive }) => {
   const isActive = activePaths.includes(location.pathname);
   const activeWishlistPath = ["/wishlist"];
   const isActiveWishlist = activeWishlistPath.includes(location.pathname);
+  const menuRef = useRef(null);
+  const queryClient = useQueryClient();
 
   const { data } = useQuery({
     queryKey: ["userCart"],
     queryFn: fetchUserCart,
   });
   const cartCount = data?.cartData?.length || null;
+  const wishList = useQuery({
+    queryKey: ["userWishlist"],
+    queryFn: fetchUserWishlist,
+  });
+  const wishlistCount = wishList?.data?.wishlistData?.length || null;
   const handleLogOut = () => {
     localStorage.removeItem("token");
     setIsAuth(false);
+    queryClient.removeQueries(["userCart"]);
+    queryClient.removeQueries(["userWishlist"]);
+    navigate("/");
   };
   const handleCartClick = () => {
     onCartClick();
@@ -36,9 +46,26 @@ const Navbar = ({ onCartClick, cartActive }) => {
       setIsAuth(true);
     }
   }, []);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+
+    if (menuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuOpen]);
 
   return (
-    <nav className="top-0 w-full py-2 bg-white flex items-center justify-between font-poppins relative">
+    <nav className="px-4  container max-w-7xl xl:px-0 mx-auto fixed top-0 left-0 right-0 z-50 py-2 bg-white flex items-center justify-between font-poppins border-b border-gray-100">
       {/* Logo */}
       <div className="">
         <img
@@ -74,14 +101,14 @@ const Navbar = ({ onCartClick, cartActive }) => {
         >
           About
         </NavLink>
-        <NavLink
+        {/* <NavLink
           to="/blog"
           className={({ isActive }) =>
             isActive ? "font-semibold border-b border-black" : ""
           }
         >
           Blog
-        </NavLink>
+        </NavLink> */}
         <NavLink
           to="/contact"
           className={({ isActive }) =>
@@ -95,24 +122,34 @@ const Navbar = ({ onCartClick, cartActive }) => {
       <div className="flex items-center gap-4">
         <div className="hidden md:flex ">
           <button
-            className={`w-10 h-10 border border-grayish-blue rounded-full flex items-center cursor-pointer justify-center ${
+            className={`w-10 h-10 border border-grayish-blue rounded-full flex items-center cursor-pointer justify-center relative ${
               isActiveWishlist
                 ? "border-text-green text-text-green"
                 : "border-grayish-blue text-Chinese-Black"
             }`}
-            onClick={() => navigate("/wishlist")}
+            onClick={() => {
+              navigate("/wishlist");
+              setMenuOpen(false);
+            }}
           >
             <Heart
               size={18}
               className={`text-Chinese-Black ${
-                isActiveWishlist
-                  ? "border-text-green text-text-green"
-                  : "border-grayish-blue text-Chinese-Black"
+                isActiveWishlist ? "text-text-green" : "text-Chinese-Black"
               }`}
             />
+
+            {wishlistCount > 0 && (
+              <Badge className="absolute -top-2.5 -right-1 text-xs px-1.5 bg-text-green text-white">
+                {wishlistCount}
+              </Badge>
+            )}
           </button>
           <button
-            onClick={handleCartClick}
+            onClick={() => {
+              handleCartClick();
+              setMenuOpen(false);
+            }}
             className={`w-10 h-10 border relative border-grayish-blue ${
               cartActive && "border-text-green"
             }  rounded-full flex items-center cursor-pointer justify-center ${
@@ -144,22 +181,29 @@ const Navbar = ({ onCartClick, cartActive }) => {
               <Button
                 variant="ghost"
                 className="px-5 py-5 rounded-full bg-[#EFEFEF]  text-black cursor-pointer"
+                onClick={() => setMenuOpen(false)}
               >
                 <UserRound />
               </Button>
               <Button
                 variant="outline"
-                onClick={handleLogOut}
+                onClick={() => {
+                  handleLogOut();
+                  setMenuOpen(false);
+                }}
                 className="px-5 py-5 rounded-full bg-white text-black cursor-pointer"
               >
-                Log Out
+                Logout
               </Button>
             </>
           ) : (
             <>
               <Button
                 variant="ghost"
-                onClick={() => navigate("/auth")}
+                onClick={() => {
+                  navigate("/auth");
+                  setMenuOpen(false);
+                }}
                 className="px-5 py-5 rounded-full bg-[#EFEFEF]  text-black cursor-pointer"
               >
                 Login
@@ -193,9 +237,13 @@ const Navbar = ({ onCartClick, cartActive }) => {
       </div>
       {/* Mobile Dropdown */}
       {menuOpen && (
-        <div className="absolute top-20 left-0 w-full bg-white z-20 flex flex-col gap-6 py-4 items-center md:flex lg:hidden">
+        <div
+          ref={menuRef}
+          className="absolute top-20 left-0 w-full bg-white z-20 flex flex-col gap-6 py-4 items-center md:flex lg:hidden"
+        >
           <NavLink
             to="/"
+            onClick={() => setMenuOpen(false)}
             className={({ isActive }) =>
               isActive ? "font-semibold border-b border-black" : ""
             }
@@ -204,6 +252,7 @@ const Navbar = ({ onCartClick, cartActive }) => {
           </NavLink>
           <NavLink
             to="/products"
+            onClick={() => setMenuOpen(false)}
             className={({ isActive }) =>
               isActive ? "font-semibold border-b border-black" : ""
             }
@@ -212,22 +261,25 @@ const Navbar = ({ onCartClick, cartActive }) => {
           </NavLink>
           <NavLink
             to="/about"
+            onClick={() => setMenuOpen(false)}
             className={({ isActive }) =>
               isActive ? "font-semibold border-b border-black" : ""
             }
           >
             About
           </NavLink>
-          <NavLink
+          {/* <NavLink
             to="/blog"
+            onClick={() => setMenuOpen(false)}
             className={({ isActive }) =>
               isActive ? "font-semibold border-b border-black" : ""
             }
           >
             Blog
-          </NavLink>
+          </NavLink> */}
           <NavLink
             to="/contact"
+            onClick={() => setMenuOpen(false)}
             className={({ isActive }) =>
               isActive ? "font-semibold border-b border-black" : ""
             }
@@ -237,24 +289,35 @@ const Navbar = ({ onCartClick, cartActive }) => {
           <div className="block md:hidden">
             <div className="flex gap-2 justify-center mt-2">
               <button
-                className={`w-10 h-10 border border-grayish-blue rounded-full flex items-center cursor-pointer justify-center ${
+                className={`w-10 h-10 border border-grayish-blue rounded-full flex items-center cursor-pointer justify-center relative ${
                   isActiveWishlist
                     ? "border-text-green text-text-green"
                     : "border-grayish-blue text-Chinese-Black"
                 }`}
-                onClick={() => navigate("/wishlist")}
+                onClick={() => {
+                  navigate("/wishlist");
+                  setMenuOpen(false);
+                }}
               >
                 <Heart
                   size={18}
                   className={`text-Chinese-Black ${
-                    isActiveWishlist
-                      ? "border-text-green text-text-green"
-                      : "border-grayish-blue text-Chinese-Black"
+                    isActiveWishlist ? "text-text-green" : "text-Chinese-Black"
                   }`}
                 />
+
+                {/* ✅ Wishlist Badge Added Here */}
+                {wishlistCount > 0 && (
+                  <Badge className="absolute -top-2.5 -right-2 text-xs px-1.5 bg-text-green text-white">
+                    {wishlistCount}
+                  </Badge>
+                )}
               </button>
               <button
-                onClick={handleCartClick}
+                onClick={() => {
+                  handleCartClick();
+                  setMenuOpen(false);
+                }}
                 className={`w-10 h-10 border border-grayish-blue ${
                   cartActive && "border-text-green"
                 }  rounded-full flex items-center cursor-pointer justify-center ${
@@ -286,24 +349,33 @@ const Navbar = ({ onCartClick, cartActive }) => {
                   </Button>
                   <Button
                     variant="outline"
-                    onClick={handleLogOut}
+                    onClick={() => {
+                      handleLogOut();
+                      setMenuOpen(false);
+                    }}
                     className="px-5 py-5 rounded-full bg-white text-black cursor-pointer"
                   >
-                    Log Out
+                    Logout
                   </Button>
                 </>
               ) : (
                 <>
                   <Button
                     variant="ghost"
-                    onClick={() => navigate("/auth")}
+                    onClick={() => {
+                      navigate("/auth");
+                      setMenuOpen(false);
+                    }}
                     className="px-5 py-5 rounded-full bg-[#EFEFEF]  text-black cursor-pointer"
                   >
                     Login
                   </Button>
                   <Button
                     variant="outline"
-                    onClick={() => navigate("/auth/register")}
+                    onClick={() => {
+                      navigate("/auth/register");
+                      setMenuOpen(false);
+                    }}
                     className="px-5 py-5 rounded-full bg-white text-black cursor-pointer"
                   >
                     Register

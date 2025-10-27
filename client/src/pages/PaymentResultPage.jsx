@@ -6,12 +6,11 @@ import { useNavigate } from "react-router";
 
 const PaymentResultPage = () => {
   const stripe = useStripe();
-  const [status, setStatus] = useState("loading"); // 'loading' | 'success' | 'failed' | 'canceled'
+  const [status, setStatus] = useState("loading");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Parse client secret from URL
     const clientSecret = new URLSearchParams(window.location.search).get(
       "payment_intent_client_secret"
     );

@@ -122,9 +122,30 @@ const CheckoutPage = () => {
                   <Label htmlFor={field.name}>{field.label}</Label>
                   <Input
                     name={field.name}
-                    type="text"
+                    type={field.name === "mobile" ? "tel" : "text"}
                     value={formData[field.name]}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (field.name === "mobile") {
+                        if (/^[0-9]*$/.test(value)) {
+                          setFormData((prev) => ({
+                            ...prev,
+                            [field.name]: value,
+                          }));
+                        }
+                      } else {
+                        handleChange(e);
+                      }
+                    }}
+                    onPaste={(e) => {
+                      if (field.name === "mobile") {
+                        const pasted = e.clipboardData.getData("text");
+                        if (!/^[0-9]*$/.test(pasted)) {
+                          e.preventDefault();
+                        }
+                      }
+                    }}
+                    maxLength={field.name === "mobile" ? 10 : undefined}
                     placeholder={`Enter ${field.label.replace("*", "").trim()}`}
                     className={`text-grayish-blue border p-5 text-sm placeholder:text-grayish-blue border-grayish-blue ${
                       errors[field.name] ? "border-red-500" : ""

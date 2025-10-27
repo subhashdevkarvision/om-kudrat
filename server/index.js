@@ -28,9 +28,8 @@ app.use("/language", languageRouter);
 app.use("/cart", cartRouter);
 app.use("/contact", contactRouter);
 app.use("/wishlist", wishlistRouter);
-// app.use("/", (req, res) => {
-//   console.log("INdex called");
-//   res.send("api is working");
-// });
+app.use("/", (req, res) => {
+  res.send("api is working");
+});
 
 app.listen("4000", () => console.log("Server is started on 4000"));

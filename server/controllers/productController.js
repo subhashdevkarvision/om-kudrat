@@ -332,7 +332,6 @@ export const getNewProductsByCategory = async (req, res) => {
       products: newProducts,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
@@ -372,7 +371,6 @@ export const getBestSellingProducts = async (req, res) => {
       products: bestSellingProducts,
     });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };

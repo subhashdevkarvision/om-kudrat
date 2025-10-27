@@ -1,5 +1,4 @@
 import wishlistModel from "../models/wishlistModel.js";
-// add to wishlist
 export const addToWishlist = async (req, res) => {
   try {
     const { productId } = req.body;
@@ -25,7 +24,6 @@ export const addToWishlist = async (req, res) => {
   }
 };
 
-// remove from wishlist
 export const removeFromWishlist = async (req, res) => {
   const { productId } = req.params;
   const userId = req.user.id;
@@ -46,21 +44,18 @@ export const removeFromWishlist = async (req, res) => {
   }
 };
 
-// get user wishlist
 export const getUserWishlist = async (req, res) => {
   const userId = req.user.id;
   try {
     const userWishlist = await wishlistModel
       .find({ userId })
       .populate("productId", "name image discountedPrice");
-    console.log(userWishlist);
     return res.status(200).json({
       success: true,
       message: "wishlist fetched successfully",
       wishlistData: userWishlist.length > 0 ? userWishlist : [],
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ success: false, message: error.message });
   }
 };

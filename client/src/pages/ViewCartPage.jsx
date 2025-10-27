@@ -18,6 +18,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchUserCart, removeFromCart } from "@/api";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
+import ConfirmationDialog from "@/components/confirmationDialog/ConfirmationDialog";
 
 const ViewCartPage = () => {
   const navigate = useNavigate();
@@ -62,11 +63,13 @@ const ViewCartPage = () => {
                 cartItems.map((item) => (
                   <TableRow key={item._id} className=" ">
                     <TableCell>
-                      <CircleX
-                        onClick={() =>
+                      <ConfirmationDialog
+                        trigger={<CircleX className="cursor-pointer" />}
+                        title="Remove item from cart?"
+                        description="This will remove the product from your cart."
+                        onConfirm={() =>
                           removeCartMutation.mutate(item?.productId?._id)
                         }
-                        className="cursor-pointer"
                       />
                     </TableCell>
                     <TableCell className="w-24 py-10">
@@ -92,7 +95,6 @@ const ViewCartPage = () => {
                       />
                     </TableCell>
                     <TableCell className=" text-text-green font-medium">
-                      $
                       {new Intl.NumberFormat("en-US", {
                         style: "currency",
                         currency: "usd",
@@ -167,7 +169,7 @@ const ViewCartPage = () => {
             </div>
             <div className="px-10">
               <Button
-                onClick={() => navigate("/place-order")}
+                onClick={() => navigate("/checkout")}
                 variant="primary"
                 className="rounded-full py-6 my-4"
               >

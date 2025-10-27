@@ -30,7 +30,7 @@ paymentRouter.post("/", userAuth, async (req, res) => {
     await order.save();
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount * 100,
-      currency: "inr",
+      currency: "usd",
       automatic_payment_methods: { enabled: true },
       metadata: {
         id: order._id.toString(),
@@ -47,27 +47,7 @@ paymentRouter.post("/", userAuth, async (req, res) => {
   }
 });
 
-// paymentRouter.get("/status", async (req, res) => {
-//   console.log("webhook");
-//   try {
-//     const sig = req.headers["stripe-signature"];
-//     const { data } = req.body;
-//     if (data.object.status === "succeeded") {
-//       const session = data.object;
-//       const order = await orderModel.findById(session.metadata.id);
-//       order.paymentStatus = "Paid";
-//       order.stripePaymentIntentId = session.id;
-//       await order.save();
-//       await cartModel.deleteMany({ userId: order.userId });
-//     }
-//     return res.json({ success: true, message: "Order done", received: true });
-//   } catch (error) {
-//     return res.status(500).json({ success: false, message: error.message });
-//   }
-// });
-
 paymentRouter.post("/status", async (req, res) => {
-  console.log("Post webhook");
   try {
     const sig = req.headers["stripe-signature"];
     const { data } = req.body;

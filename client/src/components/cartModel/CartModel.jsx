@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchUserCart, removeFromCart } from "@/api";
 import { toast } from "sonner";
+import ConfirmationDialog from "../confirmationDialog/ConfirmationDialog";
 
 const CartModel = ({ open, onClose }) => {
   const navigate = useNavigate();
@@ -64,13 +65,15 @@ const CartModel = ({ open, onClose }) => {
                     </p>
                   </div>
                   <div className="flex-col flex items-end justify-between">
-                    <Trash2
-                      onClick={() =>
+                    <ConfirmationDialog
+                      trigger={
+                        <Trash2 size={18} color="red" className="items-end" />
+                      }
+                      title="Remove item from cart?"
+                      description="This will remove the product from your cart."
+                      onConfirm={() =>
                         removeCartMutation.mutate(item.productId._id)
                       }
-                      size={18}
-                      color="red"
-                      className="items-end"
                     />
                     <QtyButton id={item.productId._id} qty={item.qty} />
                   </div>
@@ -78,7 +81,7 @@ const CartModel = ({ open, onClose }) => {
               </div>
             ))
           ) : (
-            <p>Cart is empty</p>
+            <p className="text-center font-belfast">Cart is empty</p>
           )}
         </div>
         <div className="my-4 flex justify-between font-belfast text-base font-semibold">

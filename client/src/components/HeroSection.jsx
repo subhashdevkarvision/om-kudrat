@@ -4,8 +4,10 @@ import { Mail, Star } from "lucide-react";
 import { ChevronsDown } from "lucide-react";
 import explore from "../assets/explore.png";
 import { MoveUpRight } from "lucide-react";
+import { useNavigate } from "react-router";
 
 export default function HeroSection() {
+  const navigate = useNavigate();
   return (
     <section className="flex flex-col flex-wrap md:flex-row gap-3 lg:gap-0 lg:justify-between">
       <div className="w-full lg:w-[35%] flex flex-col space-y-7 relative">
@@ -19,7 +21,6 @@ export default function HeroSection() {
           <br />
           Possibilities
         </h1>
-        {/* <hr className="text-grayish-blue" /> */}
         <p className="max-w-60 font-poppins border-t-2 pt-3.5 text-sm text-Black-Olive">
           Revamp your best test buds with delightful experience
         </p>
@@ -27,6 +28,7 @@ export default function HeroSection() {
           <Button
             variant="primary"
             className="w-fit py-6 px-6 rounded-full text-base"
+            onClick={() => navigate("/products")}
           >
             Shop Now
           </Button>

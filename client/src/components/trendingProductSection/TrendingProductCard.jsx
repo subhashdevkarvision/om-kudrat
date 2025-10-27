@@ -8,7 +8,10 @@ const TrendingProductCard = ({ image, name, price, discountedPrice, id }) => {
     navigate(`/products/${id}`);
   };
   return (
-    <div onClick={handleClick} className="flex gap-5 items-center">
+    <div
+      onClick={handleClick}
+      className="flex gap-5 cursor-pointer items-center"
+    >
       <img
         src={`${import.meta.env.VITE_BACKEND_URL}${image}`}
         className="size-44"

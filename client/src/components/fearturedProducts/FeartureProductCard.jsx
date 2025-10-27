@@ -4,7 +4,10 @@ import { useNavigate } from "react-router";
 const FeartureProductCard = ({ image, name, price, discountedPrice, id }) => {
   const navigate = useNavigate();
   return (
-    <div className="relative" onClick={() => navigate(`/products/${id}`)}>
+    <div
+      className="relative cursor-pointer"
+      onClick={() => navigate(`/products/${id}`)}
+    >
       <img
         src={`${import.meta.env.VITE_BACKEND_URL}${image}`}
         className="size-[280px] rounded-3xl"
