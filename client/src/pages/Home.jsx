@@ -10,6 +10,7 @@ import ServiceHighlights from "@/components/serviceHighlights/ServiceHighlights"
 import ExclusiveOffers from "@/components/exclusiveOffers/ExclusiveOffers";
 import HeroSection from "@/components/HeroSection";
 import { Package, Truck, MessagesSquare, CreditCard } from "lucide-react";
+import FromOurBlog from "@/components/blog/FromOurBlog";
 
 const Home = () => {
   const features = [
@@ -44,6 +45,7 @@ const Home = () => {
       <PulseAndSpices />
       <TrendingProducts />
       <Testimonial />
+      <FromOurBlog />
       <ServiceHighlights FEATURES={features} />
       <ExclusiveOffers />
     </div>

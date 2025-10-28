@@ -11,6 +11,7 @@ import paymentRouter from "./routers/paymentRouter.js";
 import contactRouter from "./routers/contactRouter.js";
 import wishlistRouter from "./routers/wishlistRouter.js";
 import newProductRouter from "./routers/newProductsRouter.js";
+import blogRouter from "./routers/blogRouter.js";
 const app = express();
 
 app.use(express.json());
@@ -28,6 +29,7 @@ app.use("/language", languageRouter);
 app.use("/cart", cartRouter);
 app.use("/contact", contactRouter);
 app.use("/wishlist", wishlistRouter);
+app.use("/blog", blogRouter);
 app.use("/", (req, res) => {
   res.send("api is working");
 });

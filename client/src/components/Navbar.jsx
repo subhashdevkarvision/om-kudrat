@@ -101,14 +101,14 @@ const Navbar = ({ onCartClick, cartActive }) => {
         >
           About
         </NavLink>
-        {/* <NavLink
+        <NavLink
           to="/blog"
           className={({ isActive }) =>
             isActive ? "font-semibold border-b border-black" : ""
           }
         >
           Blog
-        </NavLink> */}
+        </NavLink>
         <NavLink
           to="/contact"
           className={({ isActive }) =>
@@ -268,7 +268,7 @@ const Navbar = ({ onCartClick, cartActive }) => {
           >
             About
           </NavLink>
-          {/* <NavLink
+          <NavLink
             to="/blog"
             onClick={() => setMenuOpen(false)}
             className={({ isActive }) =>
@@ -276,7 +276,7 @@ const Navbar = ({ onCartClick, cartActive }) => {
             }
           >
             Blog
-          </NavLink> */}
+          </NavLink>
           <NavLink
             to="/contact"
             onClick={() => setMenuOpen(false)}

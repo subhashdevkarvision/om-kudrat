@@ -10,7 +10,7 @@ const FrontSection = ({ imgUrl, title, path, subPath }) => {
         style={{ backgroundImage: `url(${imgUrl})` }}
       ></div>
       <div className=" bg-white rounded-tr-2xl pr-5 pt-2   bottom-0 left-0 absolute">
-        <p className="font-belfast text-4xl text-Chinese-Black">{title}</p>
+        <p className="font-belfast text-4xl text-Chinese-Black mb-1">{title}</p>
         <div className="flex items-center gap-2">
           <span onClick={() => navigate("/")}>{path}</span> <span>&gt;</span>{" "}
           <span>{subPath}</span>

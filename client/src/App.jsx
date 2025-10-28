@@ -25,6 +25,8 @@ import PlaceOrderPage from "./pages/PlaceOrderPage";
 import PaymentResultPage from "./pages/PaymentResultPage";
 import ProtectedRoute from "./components/auth/ProtectedRoutes";
 import ScrollToTop from "./components/ScrollToTop";
+import BlogPage from "./pages/BlogPage";
+import SingleBlogPage from "./pages/SingleBlogPage";
 
 const App = () => {
   const stripePromise = loadStripe(import.meta.env.VITE_PUBLISHABLE_KEY);
@@ -67,6 +69,8 @@ const App = () => {
           />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/about" element={<AboutUs />} />
+          <Route path="/blog" element={<BlogPage />} />
+          <Route path="/blog/:id" element={<SingleBlogPage />} />
           <Route path="/faq" element={<FaqPage />} />
           <Route
             path="/wishlist"
