@@ -10,13 +10,12 @@ const OtherBlogs = ({ id }) => {
       `${import.meta.env.VITE_BACKEND_URL}/blog/other/${id}`
     );
     if (res.data.success) {
-      console.log("blogs", res.data);
       setBlogs(res.data.data);
     }
   };
   useEffect(() => {
     getAllBlogs();
-  }, []);
+  }, [id]);
 
   return (
     <div className="space-y-7">

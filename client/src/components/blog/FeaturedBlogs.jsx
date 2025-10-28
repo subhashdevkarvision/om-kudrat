@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import FilterHeader from "../fearturedProducts/FilterHeader";
 import { axiosInstance, truncateString } from "@/api";
 import axios from "axios";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { FreeMode, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import { Button } from "../ui/button";
-import { ChevronRight, ChevronLeft } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import PaginationComponent from "../fearturedProducts/PaginationComponent";
 import {
   Select,
@@ -20,6 +18,7 @@ import {
 } from "../ui/select";
 import BlogCard from "./BlogCard";
 import { useNavigate } from "react-router";
+import useEmblaCarousel from "embla-carousel-react";
 
 const FeaturedBlogs = () => {
   const [recentblog, setRecentBlog] = useState([]);
@@ -35,6 +34,19 @@ const FeaturedBlogs = () => {
     { label: "Z to A", value: "z-a" },
     { label: "Newest", value: "newest" },
   ];
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+    align: "center",
+    skipSnaps: false,
+  });
+
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
   const queryParams = () => {
     const params = new URLSearchParams();
     if (sortOption && sortOption !== "default") {
@@ -52,7 +64,6 @@ const FeaturedBlogs = () => {
         `${import.meta.env.VITE_BACKEND_URL}/blog/?${query}`
       );
       if (res.data.success) {
-        console.log("blogs", res.data);
         setBlogs(res.data.data);
         if (res.data.pagination.pages) {
           setTotalPages(res?.data?.pagination?.pages);
@@ -68,7 +79,6 @@ const FeaturedBlogs = () => {
     const { data } = await axiosInstance.get("/blog?sort=latest&limit=3");
     if (data.success) {
       setRecentBlog(data?.data);
-      console.log(data);
     }
   };
   const getAllProducts = async () => {
@@ -76,7 +86,6 @@ const FeaturedBlogs = () => {
       `${import.meta.env.VITE_BACKEND_URL}/product/?isBestSeller=true&limit=4`
     );
     if (res.data.success) {
-      console.log(res.data.products);
       setBestSellingProducts(res.data.products);
     }
   };
@@ -88,7 +97,7 @@ const FeaturedBlogs = () => {
     getAllBlogs();
   }, [sortOption, page]);
   return (
-    <div className="flex flex-col sm:flex-row justify-between">
+    <div className="flex flex-col sm:flex-row justify-between gap-9">
       {/* left side  */}
       <div className="sm:flex sm:w-[38%] lg:w-[27%] w-full flex flex-col space-y-7">
         {/* recent articles */}
@@ -135,49 +144,58 @@ const FeaturedBlogs = () => {
           <FilterHeader title="Best Seller" />
 
           <div>
-            <Swiper
-              loop={true}
-              spaceBetween={10}
-              navigation={true}
-              // navigation={{ prevEl: "#swiper-prev", nextEl: "#swiper-next" }}
-              modules={[FreeMode, Navigation]}
-              className="w-full rounded-2xl overflow-hidden  "
-            >
-              {bestSellingProducts.length &&
-                bestSellingProducts.map((item) => (
-                  <SwiperSlide key={item._d}>
-                    <img
-                      className="size"
-                      src={`${import.meta.env.VITE_BACKEND_URL}${item.image}`}
-                    ></img>
-                    <p className="">{item.name}</p>
-                    <p className="font-medium text-text-green">
-                      {new Intl.NumberFormat("us-en", {
-                        style: "currency",
-                        currency: "USD",
-                      }).format(item.discountedPrice)}
-                    </p>
-                    {/* <Button
-                      id="swiper-next"
-                      className="swiper-button-next absolute !bottom-0 bg-white"
-                    >
-                      <ChevronRight />
-                    </Button>
-                    <Button
-                      id="swiper-prev"
-                      className="swiper-button-prev !bottom-0 absolute"
-                    >
-                      <ChevronLeft />
-                    </Button> */}
-                  </SwiperSlide>
-                ))}
-            </Swiper>
+            <div className="overflow-hidden relative sm:w-[310px] max-w-full">
+              <div className="overflow-hidden w-full" ref={emblaRef}>
+                <div className="flex select-none gap-2">
+                  {bestSellingProducts.length &&
+                    bestSellingProducts.map((item) => (
+                      <div
+                        className="relative min-w-[100%] space-y-5"
+                        key={item._id}
+                      >
+                        <img
+                          className="w-full h-[350px] sm:w-[310px] sm:h-[196px]"
+                          src={`${import.meta.env.VITE_BACKEND_URL}${
+                            item.image
+                          }`}
+                          onClick={() => navigate(`/products/${item._id}`)}
+                        ></img>
+                        <div className="pr-1">
+                          <p className="">{item.name}</p>
+                          <p className="font-medium text-text-green">
+                            {new Intl.NumberFormat("us-en", {
+                              style: "currency",
+                              currency: "USD",
+                            }).format(item.discountedPrice)}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+              <div className="absolute bottom-0 right-0">
+                <Button
+                  variant="outline"
+                  className=" hover:bg-text-green hover:text-white  py-6  border-grayish-blue   rounded-full "
+                  onClick={scrollPrev}
+                >
+                  <ChevronLeft size={20} className="mx-1.5" />
+                </Button>
+                <Button
+                  variant="outline"
+                  className=" hover:bg-text-green hover:text-white   py-6 border-grayish-blue rounded-full   "
+                  onClick={scrollNext}
+                >
+                  <ChevronRight size={20} className="mx-1.5" />
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       {/* right side  */}
       <div className="w-full sm:w-[58%] lg:w-[71%]">
-        <div className="flex flex-wrap gap-3 mb-5 justify-between mt-8">
+        <div className="flex flex-wrap gap-3 mb-5 justify-between">
           <h5 className="text-2xl text-Chinese-Black font-belfast">
             Featured Products
           </h5>
@@ -210,7 +228,7 @@ const FeaturedBlogs = () => {
           </div>
         </div>
         {/* blogs */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-5 gap-y-7">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-5 gap-y-7">
           {blogs.length > 0 ? (
             blogs.map((b) => (
               <BlogCard

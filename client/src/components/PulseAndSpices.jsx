@@ -8,7 +8,7 @@ const PulseAndSpices = () => {
       {/* Blurred background image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat blur-md lg:blur-none"
-        style={{ backgroundImage: "url('/public/composition2.png')" }}
+        style={{ backgroundImage: "url('/composition2.png')" }}
         aria-hidden="true"
       ></div>
 

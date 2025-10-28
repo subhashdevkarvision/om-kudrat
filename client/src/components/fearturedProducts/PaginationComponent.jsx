@@ -14,6 +14,7 @@ const PaginationComponent = ({ currentPage, onpageChange, totalPages }) => {
   const handlePageClick = (p) => {
     if (currentPage !== p) {
       onpageChange(p);
+      window.scrollTo(0, 0);
     }
   };
 

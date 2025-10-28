@@ -9,7 +9,6 @@ const FromOurBlog = () => {
       `${import.meta.env.VITE_BACKEND_URL}/blog/?limit=3`
     );
     if (res.data.success) {
-      console.log("blogs", res.data);
       setBlogs(res.data.data);
     }
   };
@@ -33,6 +32,7 @@ const FromOurBlog = () => {
           blogs.map((b) => (
             <BlogCard
               key={b._id}
+              id={b._id}
               title={b.title}
               titleSize="text-2xl"
               image={b.image}

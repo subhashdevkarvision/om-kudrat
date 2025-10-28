@@ -1,5 +1,4 @@
 import React from "react";
-// import blog1 from "../../assets/blog1.png";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router";
 
@@ -15,18 +14,17 @@ const BlogCard = ({
   isReadMore = true,
 }) => {
   const navigate = useNavigate();
-  console.log("id", id);
   return (
     <div
       onClick={() => navigate(`/blog/${id}`)}
-      className="space-y-5 flex flex-col justify-between cursor-pointer"
+      className="space-y-5 flex flex-col  cursor-pointer"
     >
       <img
         src={`${import.meta.env.VITE_BACKEND_URL}${image}`}
-        className={`rounded-3xl object-center object-cover ${width} ${heigth}`}
+        className={`rounded-3xl object-center object-cover w-full sm:${width} ${heigth}`}
         alt=""
       />
-      <div className="space-y-5">
+      <div className="flex flex-col flex-1 justify-between space-y-5">
         <div>
           <h3 className={`text-Chinese-Black font-medium ${titleSize}`}>
             {title}

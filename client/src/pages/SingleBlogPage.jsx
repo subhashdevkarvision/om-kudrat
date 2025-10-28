@@ -10,7 +10,6 @@ const SingleBlogPage = () => {
   const getBlogById = async () => {
     const { data } = await axiosInstance.get(`/blog/${id}`);
     if (data.success) {
-      console.log("blog", data);
       setBlog(data.data);
     }
   };
