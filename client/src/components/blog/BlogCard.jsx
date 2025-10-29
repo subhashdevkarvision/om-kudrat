@@ -12,6 +12,7 @@ const BlogCard = ({
   createdAt,
   titleSize,
   isReadMore = true,
+  createdAtTextSize,
 }) => {
   const navigate = useNavigate();
   return (
@@ -25,12 +26,12 @@ const BlogCard = ({
         alt=""
       />
       <div className="flex flex-col flex-1 justify-between space-y-5">
-        <div>
+        <div className="space-y-2.5">
           <h3 className={`text-Chinese-Black font-medium ${titleSize}`}>
             {title}
           </h3>
           <p className="text-Black-Olive text-sm">{description}</p>
-          <p className="text-Black-Olive">
+          <p className={`text-Black-Olive ${createdAtTextSize}`}>
             {createdAt && <span>By Omkudrat.com </span>}
             {createdAt && <span>| </span>}
             <span>

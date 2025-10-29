@@ -21,13 +21,13 @@ const FromOurBlog = () => {
         <h4 className="font-belfast text-Chinese-Black text-4xl">
           From Our Blog
         </h4>
-        <p className="text-Black-Olive text-right text-lg max-w-3xl">
+        <p className="text-Black-Olive xl:text-right text-lg max-w-3xl">
           Explore our blog to discover the benefits of various spices, gardening
           tips, and delicious recipes that showcase the vibrant tastes of our
           products.
         </p>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 my-7">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 my-7">
         {blogs.length &&
           blogs.map((b) => (
             <BlogCard
@@ -39,6 +39,7 @@ const FromOurBlog = () => {
               width="w-[412px]"
               heigth="h-[368px]"
               createdAt={b.createdAt}
+              createdAtTextSize="text-sm"
               isReadMore={false}
             />
           ))}
