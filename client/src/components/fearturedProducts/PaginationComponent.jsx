@@ -3,11 +3,9 @@ import {
   PaginationContent,
   Pagination,
   PaginationLink,
-  PaginationEllipsis,
   PaginationNext,
   PaginationItem,
 } from "../ui/pagination";
-import { ChevronRight } from "lucide-react";
 import { Button } from "../ui/button";
 
 const PaginationComponent = ({ currentPage, onpageChange, totalPages }) => {

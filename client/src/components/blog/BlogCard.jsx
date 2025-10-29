@@ -46,7 +46,7 @@ const BlogCard = ({
           </p>
         </div>
         {isReadMore && (
-          <Button variant="primary" className="w-fit font-medium">
+          <Button variant="primary" className="w-fit rounded-full font-medium">
             Read More
           </Button>
         )}

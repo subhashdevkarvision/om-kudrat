@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import IconBadgeGreen from "../IconsBadgeGreen";
 import TrendingProductCard from "./TrendingProductCard";
-import product4 from "../../assets/product4.png";
 import { Button } from "../ui/button";
 import { axiosInstance } from "@/api";
 import { useNavigate } from "react-router";
@@ -9,10 +8,18 @@ import { useNavigate } from "react-router";
 const TrendingProducts = () => {
   const navigate = useNavigate();
   const [trendingProducts, setTrendingProducts] = useState([]);
+  const [dealOfTheWeek, setDealOfTheWeek] = useState([]);
   const fetchTrandingProducts = async () => {
     const { data } = await axiosInstance.get("/best-selling");
     if (data.success) {
       setTrendingProducts(data.products);
+    }
+  };
+  const fetchDealOfTheWeek = async () => {
+    const { data } = await axiosInstance.get("/product?isDealOfTheWeek=true");
+    if (data.success) {
+      console.log("deal of the week", data.products[0]);
+      setDealOfTheWeek(data.products[0]);
     }
   };
   const handleClick = (id) => {
@@ -21,6 +28,7 @@ const TrendingProducts = () => {
   };
   useEffect(() => {
     fetchTrandingProducts();
+    fetchDealOfTheWeek();
   }, []);
   return (
     <div className="flex flex-col lg:flex-row gap-8">
@@ -44,19 +52,25 @@ const TrendingProducts = () => {
         </div>
       </div>
       <div
-        onClick={() => handleClick("68f0cd73bb5ebbe7aab2ac49")}
+        onClick={() => handleClick(dealOfTheWeek._id)}
         className="w-full lg:w-[30%] bg-text-green px-5 py-4 rounded-2xl flex flex-col items-center justify-center space-y-3 mt-6 md:mt-0"
       >
         <h5 className="font-belfast text-2xl text-white">Deal Of The Week</h5>
         <img
-          src={product4}
+          src={`${import.meta.env.VITE_BACKEND_URL}${dealOfTheWeek.image}`}
           className="rounded-2xl w-56 h-48 lg:w-full lg:h-full"
           alt=""
         />
         <div className="text-center font-poppins">
-          <p className=" font-medium text-lg text-white">Barberry</p>
-          <span className="line-through text-xs text-grayish-blue">$34.60</span>
-          <p className=" font-medium text-lg text-white">$24.60</p>
+          <p className=" font-medium text-lg text-white">
+            {dealOfTheWeek.name}
+          </p>
+          <span className="line-through text-xs text-grayish-blue">
+            ${dealOfTheWeek.price}
+          </span>
+          <p className=" font-medium text-lg text-white">
+            ${dealOfTheWeek.discountedPrice}
+          </p>
         </div>
         <Button
           variant="primary"

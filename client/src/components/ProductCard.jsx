@@ -26,6 +26,11 @@ const ProductCard = ({ id, image, title, price, isInWishlist }) => {
       if (data.success) {
         queryClient.invalidateQueries(["userWishlist"]);
       }
+    } catch (error) {
+      console.log(error);
+      if (error?.response?.status === 401) {
+        navigate("/auth");
+      }
     } finally {
       setLoading(false);
     }

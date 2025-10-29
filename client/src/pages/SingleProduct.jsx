@@ -72,8 +72,8 @@ const SingleProduct = () => {
     onError: (error) => {
       if (error?.response?.data?.message === "You are not authorised") {
         navigate("/auth");
+        toast.error(error?.response?.data?.message || "Something went wrong");
       }
-      toast.error(error?.response?.data?.message || "Something went wrong");
     },
   });
   const addToWishlistMutation = useMutation({

@@ -18,6 +18,7 @@ const productSchema = mongoose.Schema(
     },
     isBestSeller: { type: Boolean, default: false },
     isFeatured: { type: Boolean, default: false },
+    isDealOfTheWeek: { type: Boolean, default: false },
   },
   {
     timestamps: true,

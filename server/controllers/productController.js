@@ -164,6 +164,7 @@ export const getAllProducts = async (req, res) => {
       maxPrice,
       isFeatured,
       isBestSeller,
+      isDealOfTheWeek,
       sort,
     } = req.query;
     const page = parseInt(req.query.page) || 1;
@@ -200,6 +201,9 @@ export const getAllProducts = async (req, res) => {
     }
     if (isBestSeller !== undefined) {
       matchCriteria.isBestSeller = isBestSeller === "true";
+    }
+    if (isDealOfTheWeek !== undefined) {
+      matchCriteria.isDealOfTheWeek = isDealOfTheWeek === "true";
     }
     let sortStage = {};
     switch (sort) {

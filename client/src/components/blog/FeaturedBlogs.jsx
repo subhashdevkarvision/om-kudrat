@@ -19,6 +19,7 @@ import {
 import BlogCard from "./BlogCard";
 import { useNavigate } from "react-router";
 import useEmblaCarousel from "embla-carousel-react";
+import SortComponent from "../SortComponent";
 
 const FeaturedBlogs = () => {
   const [recentblog, setRecentBlog] = useState([]);
@@ -69,8 +70,7 @@ const FeaturedBlogs = () => {
           setTotalPages(res?.data?.pagination?.pages);
         }
       }
-      // eslint-disable-next-line no-unused-vars
-    } catch (error) {
+    } catch {
       setBlogs([]);
       setTotalPages(1);
     }
@@ -179,14 +179,14 @@ const FeaturedBlogs = () => {
                   className=" hover:bg-text-green hover:text-white  py-6  border-grayish-blue   rounded-full "
                   onClick={scrollPrev}
                 >
-                  <ChevronLeft size={20} className="mx-1.5" />
+                  <ChevronLeft size={20} className="mx-[4px]" />
                 </Button>
                 <Button
                   variant="outline"
                   className=" hover:bg-text-green hover:text-white   py-6 border-grayish-blue rounded-full   "
                   onClick={scrollNext}
                 >
-                  <ChevronRight size={20} className="mx-1.5" />
+                  <ChevronRight size={20} className="mx-[4px]" />
                 </Button>
               </div>
             </div>
@@ -200,6 +200,11 @@ const FeaturedBlogs = () => {
             Featured Products
           </h5>
           <div>
+            {/* <SortComponent
+              sortOptionValues={sortOption}
+              sortOptionsArray={sortOptions}
+              handleValuechange={(value) => setSortOption(value)}
+            /> */}
             <Select
               value={sortOption}
               onValueChange={(value) => setSortOption(value)}
