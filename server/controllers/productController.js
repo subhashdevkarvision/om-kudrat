@@ -33,31 +33,6 @@ export const addProduct = async (req, res) => {
   }
 };
 
-export const addCategory = async (req, res) => {
-  try {
-    const { name } = req.body;
-    const category = new categoryModel({
-      name,
-    });
-    await category.save();
-    res.status(201).json({ success: true, message: "Category added" });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
-export const addLanguage = async (req, res) => {
-  try {
-    const { name } = req.body;
-    const language = new languageModel({
-      name,
-    });
-    await language.save();
-    res.status(201).json({ success: true, message: "language added" });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
-
 export const getAllFilters = async (req, res) => {
   try {
     const filters = await productModel.aggregate([

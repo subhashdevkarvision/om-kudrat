@@ -14,7 +14,7 @@ userRouter.post(
   validateFields(["email", "name", "password"]),
   register
 );
-userRouter.post("/login", validateFields(["email", "name", "password"]), login);
+userRouter.post("/login", validateFields(["email", "password"]), login);
 userRouter.post("/send-email", validateFields(["email"]), forgotPassword);
 userRouter.post("/verify-code", validateFields(["email", "otp"]), verifyCode);
 userRouter.post(

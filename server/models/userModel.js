@@ -8,6 +8,7 @@ const userSchema = mongoose.Schema(
     otp: { type: Number, default: null },
     otpExpires: { type: Date },
     otpVerify: { type: Boolean, default: false },
+    role: { type: String, enum: ["user", "admin"], default: "user" },
   },
   {
     timestamps: true,

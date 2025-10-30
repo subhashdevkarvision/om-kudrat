@@ -31,7 +31,7 @@ export const register = async (req, res) => {
 };
 export const login = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role = "user" } = req.body;
     const user = await userModel.findOne({ email });
     if (!user) {
       return res.status(401).json({
@@ -54,6 +54,7 @@ export const login = async (req, res) => {
       success: true,
       message: "Login successfully",
       authenticationKey: token,
+      role: user.role,
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
@@ -154,5 +155,32 @@ export const resetPassword = async (req, res) => {
       .json({ success: true, message: "Password reset successfully" });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await userModel
+      .find({}, { password: 0, otp: 0, otpExpires: 0 })
+      .sort({ createdAt: -1 });
+
+    if (users.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No users found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Users fetched successfully",
+      data: users,
+    });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 };
