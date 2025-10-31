@@ -2,6 +2,7 @@ import express from "express";
 import { validateFields } from "../middleware/validation.js";
 import {
   forgotPassword,
+  getAllUsers,
   login,
   register,
   resetPassword,
@@ -9,6 +10,7 @@ import {
 } from "../controllers/userController.js";
 const userRouter = express.Router();
 
+userRouter.get("/", getAllUsers);
 userRouter.post(
   "/register",
   validateFields(["email", "name", "password"]),
