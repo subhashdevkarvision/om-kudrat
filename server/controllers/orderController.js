@@ -4,7 +4,8 @@ export const getAllOrders = async (req, res) => {
   try {
     const orders = await orderModel
       .find()
-      .populate("cartItems.productId", "name image price") // ✅ populate product info
+      .populate("cartItems.productId", "name image price")
+      .populate("userId", "name email")
       .sort({ createdAt: -1 });
 
     res.status(200).json({

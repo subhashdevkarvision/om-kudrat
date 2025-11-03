@@ -3,11 +3,16 @@ import productModel from "../models/productModel.js";
 import languageModel from "../models/languageModel.js";
 import mongoose from "mongoose";
 import orderModel from "../models/orderModel.js";
+import path from "path";
+import fs, { existsSync, unlinkSync } from "fs";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 export const addProduct = async (req, res) => {
   try {
     const { name, price, discountedPrice, categoryId, languageId } = req.body;
-
-    const image = req.file ? `uploads/${file.filename}` : null;
+    const image = req.file ? `/uploads/${req.file.filename}` : null;
     if (!image) {
       return res
         .status(400)
@@ -142,8 +147,9 @@ export const getAllProducts = async (req, res) => {
       isDealOfTheWeek,
       sort,
     } = req.query;
+
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 9;
+    const limit = req.query.limit ? parseInt(req.query.limit) : 9;
     const skip = (page - 1) * limit;
     const matchCriteria = {};
     if (ids) {
@@ -254,6 +260,35 @@ export const getAllProducts = async (req, res) => {
   }
 };
 
+export const getProducts = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const totalProducts = await productModel.countDocuments();
+
+    const products = await productModel
+      .find({})
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      page,
+      limit,
+      totalPages: Math.ceil(totalProducts / limit),
+      totalProducts,
+      products,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 export const getProductById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -350,5 +385,124 @@ export const getBestSellingProducts = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid Product Id" });
+    }
+    const product = await productModel.findById(id);
+    if (!product) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    const {
+      name,
+      price,
+      discountedPrice,
+      categoryId,
+      languageId,
+      isBestSeller,
+      isFeatured,
+    } = req.body;
+    const updatedFields = {};
+    if (name) {
+      updatedFields.name = name;
+    }
+    if (price) {
+      updatedFields.price = Number(price);
+    }
+    if (discountedPrice) {
+      updatedFields.discountedPrice = Number(discountedPrice);
+    }
+    if (categoryId) {
+      updatedFields.categoryId = categoryId;
+    }
+    if (languageId) {
+      updatedFields.languageId = languageId;
+    }
+
+    if (isBestSeller !== undefined) {
+      updatedFields.isBestSeller = isBestSeller === "true";
+    }
+    if (isFeatured !== undefined) {
+      updatedFields.isFeatured = isFeatured === "true";
+    }
+    if (req.file) {
+      if (product.image) {
+        const oldImagePath = path.resolve(
+          __dirname,
+          "..",
+          "public",
+          path.basename(product.image)
+            ? `uploads/${path.basename(product.image)}`
+            : ""
+        );
+
+        if (existsSync(oldImagePath)) {
+          unlinkSync(oldImagePath);
+        }
+      }
+      updatedFields.image = `/uploads/${req.file.filename}`;
+    }
+    const updateProduct = await productModel.findByIdAndUpdate(id, {
+      $set: updatedFields,
+    });
+    res
+      .status(200)
+      .json({ success: true, message: "Product updated successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid product ID" });
+    }
+
+    const product = await productModel.findById(id);
+    if (!product) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    if (product.image) {
+      const imagePath = path.resolve(
+        __dirname,
+        "..",
+        "public",
+        product.image.replace(/^\//, "")
+      );
+
+      if (existsSync(imagePath)) {
+        unlinkSync(imagePath);
+      }
+    }
+
+    await productModel.findByIdAndDelete(id);
+
+    return res.status(200).json({
+      success: true,
+      message: "Product deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error while deleting product",
+    });
   }
 };

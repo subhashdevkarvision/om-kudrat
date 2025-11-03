@@ -18,7 +18,6 @@ const TrendingProducts = () => {
   const fetchDealOfTheWeek = async () => {
     const { data } = await axiosInstance.get("/product?isDealOfTheWeek=true");
     if (data.success) {
-      console.log("deal of the week", data.products[0]);
       setDealOfTheWeek(data.products[0]);
     }
   };
