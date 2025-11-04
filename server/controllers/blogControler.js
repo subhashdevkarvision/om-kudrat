@@ -7,7 +7,7 @@ const __dirname = path.resolve();
 export const getAllBlogs = async (req, res) => {
   try {
     const page = Number(req.query.page);
-    const limit = Number(req.query.limit) || 20;
+    const limit = Number(req.query.limit) || 9;
     const skip = (page - 1) * limit;
 
     const sortOption = req.query.sort || "default";

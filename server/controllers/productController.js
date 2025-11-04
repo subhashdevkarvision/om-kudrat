@@ -270,6 +270,8 @@ export const getProducts = async (req, res) => {
 
     const products = await productModel
       .find({})
+      .populate("categoryId", "name")
+      .populate("languageId", "name")
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 });

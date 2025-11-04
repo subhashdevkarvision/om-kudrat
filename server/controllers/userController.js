@@ -160,9 +160,14 @@ export const resetPassword = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
     const users = await userModel
       .find({}, { password: 0, otp: 0, otpExpires: 0 })
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
     if (users.length === 0) {
       return res.status(404).json({
@@ -170,11 +175,12 @@ export const getAllUsers = async (req, res) => {
         message: "No users found",
       });
     }
-
+    const total = await userModel.countDocuments();
     res.status(200).json({
       success: true,
       message: "Users fetched successfully",
       data: users,
+      pagination: { total, page, limit, pages: Math.ceil(total / limit) },
     });
   } catch (error) {
     console.error("Error fetching users:", error);
