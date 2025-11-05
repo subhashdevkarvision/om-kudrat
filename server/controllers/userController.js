@@ -190,3 +190,25 @@ export const getAllUsers = async (req, res) => {
     });
   }
 };
+
+export const getUser = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await userModel
+      .findById(userId)
+      .select("-password -otp -otpExpires -otpVerify");
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User is not register" });
+    }
+    res
+      .status(200)
+      .json({ success: true, message: "Fetched user data successfully", user });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

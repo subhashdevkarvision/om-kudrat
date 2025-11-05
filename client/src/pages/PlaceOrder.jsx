@@ -98,8 +98,7 @@ const PlaceOrder = ({ orderId }) => {
       if (error) {
         setMessage(error.message || "Something went wrong.");
       }
-      // eslint-disable-next-line no-unused-vars
-    } catch (err) {
+    } catch {
       setMessage("An unexpected error occurred.");
     } finally {
       setLoading(false);
@@ -162,7 +161,7 @@ const PlaceOrder = ({ orderId }) => {
                     }}
                     placeholder={`Enter ${field.label.replace("*", "").trim()}`}
                     maxLength={field.name === "mobile" ? 10 : undefined}
-                    className={`text-grayish-blue border p-5 text-sm placeholder:text-grayish-blue border-grayish-blue ${
+                    className={`text-Black-Olive border p-5 text-sm placeholder:text-grayish-blue border-grayish-blue ${
                       errors[field.name] ? "border-red-500" : ""
                     }`}
                   />

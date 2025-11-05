@@ -147,7 +147,7 @@ const CheckoutPage = () => {
                     }}
                     maxLength={field.name === "mobile" ? 10 : undefined}
                     placeholder={`Enter ${field.label.replace("*", "").trim()}`}
-                    className={`text-grayish-blue border p-5 text-sm placeholder:text-grayish-blue border-grayish-blue ${
+                    className={`text-Black-Olive border p-5 text-sm placeholder:text-grayish-blue border-grayish-blue ${
                       errors[field.name] ? "border-red-500" : ""
                     }`}
                   />

@@ -62,7 +62,6 @@ export const getOtherBlogs = async (req, res) => {
 
 export const addBlog = async (req, res) => {
   try {
-    console.log(req.body);
     const { title, shortDescription, content } = req.body;
     const image = req.file ? `/uploads/${req.file.filename}` : null;
     if (!image) {
@@ -82,7 +81,6 @@ export const addBlog = async (req, res) => {
 
     res.status(201).json({ success: true, message: "Blog added successfuly" });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ success: false, message: error.message });
   }
 };

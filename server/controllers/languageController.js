@@ -1,11 +1,9 @@
 import languageModel from "../models/languageModel.js";
 
-// ✅ Create Language
 export const createLanguage = async (req, res) => {
   try {
     const { name } = req.body;
 
-    // check if already exists
     const existing = await languageModel.findOne({ name: name.trim() });
     if (existing) {
       return res.status(409).json({
@@ -30,15 +28,23 @@ export const createLanguage = async (req, res) => {
   }
 };
 
-// ✅ Get All Languages
 export const getAllLanguages = async (req, res) => {
   try {
-    const languages = await languageModel.find();
-
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
+    const languages = await languageModel.find().skip(skip).limit(limit);
+    const total = await languageModel.countDocuments();
     res.status(200).json({
       success: true,
       message: "Languages fetched successfully",
       data: languages,
+      pagination: {
+        total,
+        limit,
+        page,
+        pages: Math.ceil(total / limit),
+      },
     });
   } catch (error) {
     console.error("Error fetching languages:", error);
@@ -49,7 +55,6 @@ export const getAllLanguages = async (req, res) => {
   }
 };
 
-// ✅ Get Single Language by ID
 export const getLanguageById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -76,7 +81,6 @@ export const getLanguageById = async (req, res) => {
   }
 };
 
-// ✅ Update Language
 export const updateLanguage = async (req, res) => {
   try {
     const { id } = req.params;
@@ -109,7 +113,6 @@ export const updateLanguage = async (req, res) => {
   }
 };
 
-// ✅ Delete Language
 export const deleteLanguage = async (req, res) => {
   try {
     const { id } = req.params;

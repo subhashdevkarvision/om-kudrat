@@ -28,12 +28,14 @@ const FeartureProductSection = () => {
   const [categoriesProducts, setCategoriesProducts] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [selectedLanguage, setSelectedLanguage] = useState([]);
-  const [priceRange, setPriceRange] = useState([10, 100]);
+  const [priceRange, setPriceRange] = useState([10, 1000]);
   const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOption, setSortOption] = useState("default");
   const [totalPages, setTotalPages] = useState(1);
   const [page, setPage] = useState(1);
+  const [minDiscountedPrice, setMinDiscountedPrice] = useState(0);
+  const [maxDiscountedPrice, setMaxDiscountedPrice] = useState(0);
 
   const sortOptions = [
     { label: "Default", value: "default" },
@@ -54,6 +56,8 @@ const FeartureProductSection = () => {
 
       setLanguages(res.data.filters[0].languages);
       setCategoriesProducts(filterCategoriesProducts);
+      setMaxDiscountedPrice(res.data.filters[0].maxDiscountedPrice);
+      setMinDiscountedPrice(res.data.filters[0].minDiscountedPrice);
     }
   };
   const queryParams = () => {
@@ -93,8 +97,7 @@ const FeartureProductSection = () => {
           setTotalPages(res.data.totalPages);
         }
       }
-      // eslint-disable-next-line no-unused-vars
-    } catch (error) {
+    } catch {
       setProducts([]);
       setTotalPages(1);
     }
@@ -188,18 +191,18 @@ const FeartureProductSection = () => {
                 className="flex text-Gray91 border-Gray91 rounded-2xl items-center py-2"
               >
                 <Checkbox
-                  checked={selectedLanguage.includes(option.id)}
+                  checked={selectedLanguage.includes(option._id)}
                   onCheckedChange={(checked) => {
                     setSelectedLanguage((prev) =>
                       checked
-                        ? [...prev, option.id]
-                        : prev.filter((id) => id !== option.id)
+                        ? [...prev, option._id]
+                        : prev.filter((id) => id !== option._id)
                     );
                   }}
                   className="data-[state=checked]:bg-text-green data-[state=checked]:border-text-green w-5 h-5 mr-3 rounded border-gray-400"
                 />
                 <span className="text-sm  flex-1">{option.name}</span>
-                <span className="text-sm ml-2">(12)</span>
+                <span className="text-sm ml-2">({option.productCount})</span>
               </label>
             ))}
           </div>
@@ -209,8 +212,8 @@ const FeartureProductSection = () => {
           <FilterHeader title="Filter By Price" />
           <div className="w-full mt-5 flex flex-col items-center px-2">
             <Slider
-              min={10}
-              max={100}
+              min={minDiscountedPrice}
+              max={maxDiscountedPrice}
               step={10}
               value={priceRange}
               onValueChange={(v) => setPriceRange(v)}
@@ -218,10 +221,10 @@ const FeartureProductSection = () => {
             />
             <div className="w-full mt-4 flex items-center justify-between mb-2">
               <span className="text-lg font-belfast text-Chinese-Black">
-                {10}$
+                {minDiscountedPrice}$
               </span>
               <span className="text-lg font-belfast text-Chinese-Black">
-                {100}$
+                {maxDiscountedPrice}$
               </span>
             </div>
           </div>

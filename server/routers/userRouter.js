@@ -3,14 +3,17 @@ import { validateFields } from "../middleware/validation.js";
 import {
   forgotPassword,
   getAllUsers,
+  getUser,
   login,
   register,
   resetPassword,
   verifyCode,
 } from "../controllers/userController.js";
+import userAuth from "../middleware/userAuth.js";
 const userRouter = express.Router();
 
 userRouter.get("/", getAllUsers);
+userRouter.get("/user-detail", userAuth, getUser);
 userRouter.post(
   "/register",
   validateFields(["email", "name", "password"]),

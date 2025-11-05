@@ -19,13 +19,12 @@ const OurBestSellingProducts = () => {
   const getAllProducts = async () => {
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/product/?isBestSeller=true`
+        `${import.meta.env.VITE_BACKEND_URL}/product/?isBestSeller=true&limit=5`
       );
       if (res.data.success) {
         setProducts(res.data.products);
       }
-      // eslint-disable-next-line no-unused-vars
-    } catch (error) {
+    } catch {
       setProducts([]);
     }
   };

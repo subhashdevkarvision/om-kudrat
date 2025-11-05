@@ -13,6 +13,7 @@ import wishlistRouter from "./routers/wishlistRouter.js";
 import newProductRouter from "./routers/newProductsRouter.js";
 import blogRouter from "./routers/blogRouter.js";
 import orderRouter from "./routers/orderRouter.js";
+import dashboardRouter from "./routers/dashboardRouter.js";
 const app = express();
 
 app.use(express.json());
@@ -32,6 +33,7 @@ app.use("/contact", contactRouter);
 app.use("/wishlist", wishlistRouter);
 app.use("/blog", blogRouter);
 app.use("/orders", orderRouter);
+app.use("/stats", dashboardRouter);
 app.use("/", (req, res) => {
   res.send("api is working");
 });

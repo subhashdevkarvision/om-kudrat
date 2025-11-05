@@ -43,10 +43,9 @@ export const getAllFilters = async (req, res) => {
     const filters = await productModel.aggregate([
       {
         $match: {
-          price: { $gte: 10, $lte: 100 },
+          price: { $gte: 10, $lte: 1000 },
         },
       },
-
       {
         $lookup: {
           from: "categories",
@@ -56,7 +55,6 @@ export const getAllFilters = async (req, res) => {
         },
       },
       { $unwind: "$category" },
-
       {
         $lookup: {
           from: "languages",
@@ -66,9 +64,7 @@ export const getAllFilters = async (req, res) => {
         },
       },
       { $unwind: "$language" },
-
       { $sort: { name: 1 } },
-
       {
         $group: {
           _id: "$category.name",
@@ -76,6 +72,7 @@ export const getAllFilters = async (req, res) => {
             $push: {
               _id: "$_id",
               name: "$name",
+              discountedPrice: "$discountedPrice",
             },
           },
           allLanguages: {
@@ -86,9 +83,7 @@ export const getAllFilters = async (req, res) => {
           },
         },
       },
-
       { $sort: { _id: 1 } },
-
       {
         $group: {
           _id: null,
@@ -103,7 +98,6 @@ export const getAllFilters = async (req, res) => {
           },
         },
       },
-
       {
         $project: {
           _id: 0,
@@ -114,6 +108,80 @@ export const getAllFilters = async (req, res) => {
               initialValue: [],
               in: { $setUnion: ["$$value", "$$this"] },
             },
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          pipeline: [
+            {
+              $lookup: {
+                from: "languages",
+                localField: "languageId",
+                foreignField: "_id",
+                as: "language",
+              },
+            },
+            { $unwind: "$language" },
+            {
+              $group: {
+                _id: "$language._id",
+                name: { $first: "$language.name" },
+                productCount: { $sum: 1 },
+              },
+            },
+          ],
+          as: "languageStats",
+        },
+      },
+      {
+        $addFields: {
+          languages: "$languageStats",
+        },
+      },
+      {
+        $lookup: {
+          from: "products",
+          pipeline: [
+            {
+              $group: {
+                _id: null,
+                minDiscountedPrice: { $min: "$discountedPrice" },
+                maxDiscountedPrice: { $max: "$discountedPrice" },
+              },
+            },
+          ],
+          as: "priceRange",
+        },
+      },
+      {
+        $addFields: {
+          minDiscountedPrice: {
+            $multiply: [
+              {
+                $floor: {
+                  $divide: [
+                    { $arrayElemAt: ["$priceRange.minDiscountedPrice", 0] },
+                    10,
+                  ],
+                },
+              },
+              10,
+            ],
+          },
+          maxDiscountedPrice: {
+            $multiply: [
+              {
+                $ceil: {
+                  $divide: [
+                    { $arrayElemAt: ["$priceRange.maxDiscountedPrice", 0] },
+                    10,
+                  ],
+                },
+              },
+              10,
+            ],
           },
         },
       },

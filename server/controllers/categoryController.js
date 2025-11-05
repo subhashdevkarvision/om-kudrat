@@ -1,11 +1,9 @@
 import categoryModel from "../models/categoryModel.js";
 
-// ✅ Create Category
 export const createCategory = async (req, res) => {
   try {
     const { name } = req.body;
 
-    // check if category already exists
     const existing = await categoryModel.findOne({ name: name.trim() });
     if (existing) {
       return res.status(409).json({
@@ -30,15 +28,23 @@ export const createCategory = async (req, res) => {
   }
 };
 
-// ✅ Get All Categories
 export const getAllCategories = async (req, res) => {
   try {
-    const categories = await categoryModel.find();
-
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
+    const categories = await categoryModel.find().skip(skip).limit(limit);
+    const total = await categoryModel.countDocuments();
     res.status(200).json({
       success: true,
       message: "Categories fetched successfully",
       data: categories,
+      pagination: {
+        total,
+        limit,
+        page,
+        pages: Math.ceil(total / limit),
+      },
     });
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -49,7 +55,6 @@ export const getAllCategories = async (req, res) => {
   }
 };
 
-// ✅ Get Single Category by ID
 export const getCategoryById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -76,7 +81,6 @@ export const getCategoryById = async (req, res) => {
   }
 };
 
-// ✅ Update Category
 export const updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
@@ -109,7 +113,6 @@ export const updateCategory = async (req, res) => {
   }
 };
 
-// ✅ Delete Category
 export const deleteCategory = async (req, res) => {
   try {
     const { id } = req.params;

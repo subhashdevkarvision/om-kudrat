@@ -54,13 +54,13 @@ const ContactUs = () => {
       );
 
       toast.dismiss();
-      toast.success(data?.message || "✅ Message sent successfully!");
+      toast.success(data?.message || " Message sent successfully!");
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {
       toast.dismiss();
       toast.error(
         error?.response?.data?.message ||
-          "❌ Failed to send message. Please try again."
+          " Failed to send message. Please try again."
       );
     } finally {
       setLoading(false);
