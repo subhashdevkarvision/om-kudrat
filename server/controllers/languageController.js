@@ -1,4 +1,5 @@
 import languageModel from "../models/languageModel.js";
+import productModel from "../models/productModel.js";
 
 export const createLanguage = async (req, res) => {
   try {
@@ -120,6 +121,20 @@ export const updateLanguage = async (req, res) => {
 export const deleteLanguage = async (req, res) => {
   try {
     const { id } = req.params;
+    const linkedProducts = await productModel
+      .find({
+        languageId: id,
+      })
+      .select(
+        "-_id -price -image -discountedPrice -categoryId -languageId -isBestSeller -isFeatured -isDealOfTheWeek -createdAt -updatedAt -__v"
+      );
+    if (linkedProducts.length > 0) {
+      return res.status(409).json({
+        success: false,
+        message: "This Language is linked with products and cannot be deleted.",
+        linkedProducts,
+      });
+    }
 
     const deleted = await languageModel.findByIdAndDelete(id);
     if (!deleted) {

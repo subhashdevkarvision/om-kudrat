@@ -1,17 +1,31 @@
 import categoryModel from "../models/categoryModel.js";
 import productModel from "../models/productModel.js";
-import languageModel from "../models/languageModel.js";
 import mongoose from "mongoose";
 import orderModel from "../models/orderModel.js";
 import path from "path";
-import fs, { existsSync, unlinkSync } from "fs";
+import { existsSync, unlinkSync } from "fs";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 export const addProduct = async (req, res) => {
   try {
-    const { name, price, discountedPrice, categoryId, languageId } = req.body;
+    const {
+      name,
+      price,
+      discountedPrice,
+      categoryId,
+      languageId,
+      isFeatured,
+      isBestSeller,
+      isDealOfTheWeek,
+    } = req.body;
+    if (isDealOfTheWeek) {
+      const exstingDealOftheWeekProduct = await productModel.updateMany(
+        { isDealOfTheWeek: true },
+        { $set: { isDealOfTheWeek: false } }
+      );
+    }
     const image = req.file ? `/uploads/${req.file.filename}` : null;
     if (!image) {
       return res
@@ -26,6 +40,9 @@ export const addProduct = async (req, res) => {
       categoryId,
       languageId,
       image,
+      isBestSeller,
+      isDealOfTheWeek,
+      isFeatured,
     });
 
     await product.save();
@@ -481,6 +498,7 @@ export const updateProduct = async (req, res) => {
       languageId,
       isBestSeller,
       isFeatured,
+      isDealOfTheWeek,
     } = req.body;
     const updatedFields = {};
     if (name) {
@@ -505,6 +523,13 @@ export const updateProduct = async (req, res) => {
     if (isFeatured !== undefined) {
       updatedFields.isFeatured = isFeatured === "true";
     }
+    if (isDealOfTheWeek) {
+      const exstingDealOftheWeekProduct = await productModel.updateMany(
+        { isDealOfTheWeek: true },
+        { $set: { isDealOfTheWeek: false } }
+      );
+      updatedFields.isDealOfTheWeek = isDealOfTheWeek === "true";
+    }
     if (req.file) {
       if (product.image) {
         const oldImagePath = path.resolve(
@@ -522,6 +547,7 @@ export const updateProduct = async (req, res) => {
       }
       updatedFields.image = `/uploads/${req.file.filename}`;
     }
+
     const updateProduct = await productModel.findByIdAndUpdate(id, {
       $set: updatedFields,
     });
